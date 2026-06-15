@@ -1,0 +1,48 @@
+{
+  "name": "Franchising Factory",
+  "short_name": "FF Factory",
+  "description": "Transformamos negócios de sucesso em franquias lucrativas e escaláveis.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#c9a84c",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "pt-BR",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "https://static.wixstatic.com/media/feb376_693663dfe7fe48c3ac3d533f74b20bb7~mv2.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://static.wixstatic.com/media/feb376_693663dfe7fe48c3ac3d533f74b20bb7~mv2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://static.wixstatic.com/media/feb376_693663dfe7fe48c3ac3d533f74b20bb7~mv2.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Franchising Factory"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Agendar Reunião",
+      "url": "https://calendly.com/rafaelestevez",
+      "description": "Agende uma reunião com Rafael Estevez"
+    },
+    {
+      "name": "Diagnóstico",
+      "url": "/?diagnostico=1",
+      "description": "Veja se seu negócio é franqueável"
+    }
+  ]
+}

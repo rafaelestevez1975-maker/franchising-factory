@@ -1,0 +1,215 @@
+/* =============================================
+   POPUP FRANQUEABILIDADE — Franchising Factory
+   ============================================= */
+
+#ff-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background-color: rgba(0,0,0,0.72);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  opacity: 0; transition: opacity 0.3s;
+  isolation: isolate;
+}
+#ff-overlay.ff-visible { opacity: 1; }
+#ff-overlay.ff-hide { opacity: 0; pointer-events: none; }
+
+#ff-modal {
+  background: #ffffff !important;
+  border-radius: 16px;
+  max-width: 620px; width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+  z-index: 10000;
+  padding: 48px 44px 40px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+  animation: ffSlideUp 0.35s cubic-bezier(.22,1,.36,1);
+}
+@keyframes ffSlideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+#ff-close {
+  position: absolute; top: 16px; right: 18px;
+  background: none; border: none; font-size: 1.6rem;
+  cursor: pointer; color: #aaa; line-height: 1;
+  transition: color 0.2s;
+}
+#ff-close:hover { color: #333; }
+
+/* ---- Badge & Title ---- */
+.ff-hero-badge {
+  display: inline-block;
+  background: #fff3d0; color: #a07000;
+  font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 20px;
+  margin-bottom: 16px;
+}
+.ff-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.6rem; font-weight: 700;
+  color: #1a1a1a; line-height: 1.3;
+  margin-bottom: 10px;
+}
+.ff-sub { color: #666; font-size: 0.95rem; margin-bottom: 28px; line-height: 1.6; }
+
+/* ---- Lead Form ---- */
+.ff-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.ff-field { display: flex; flex-direction: column; gap: 5px; }
+.ff-field-full { grid-column: 1 / -1; }
+.ff-field label { font-size: 0.82rem; font-weight: 600; color: #444; }
+.ff-field label .req { color: #c0392b; }
+.ff-field input,
+.ff-field select {
+  border: 1.5px solid #ddd; border-radius: 8px;
+  padding: 10px 14px; font-size: 0.9rem;
+  font-family: inherit; background: #fafafa;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none; color: #1a1a1a;
+}
+.ff-field input:focus,
+.ff-field select:focus {
+  border-color: #c9a84c;
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+  background: #fff;
+}
+.ff-field input.ff-invalid,
+.ff-field select.ff-invalid { border-color: #e74c3c; background: #fff5f5; }
+.ff-privacy { font-size: 0.78rem; color: #aaa; text-align: center; margin-top: 12px; }
+
+/* ---- Progress ---- */
+.ff-progress-wrap {
+  height: 6px; background: #f0f0f0; border-radius: 3px;
+  margin-bottom: 6px; overflow: hidden;
+}
+.ff-progress-bar {
+  height: 100%; background: linear-gradient(90deg, #c9a84c, #e8c96a);
+  border-radius: 3px; transition: width 0.4s ease;
+}
+.ff-progress-label { font-size: 0.78rem; color: #aaa; margin-bottom: 20px; }
+
+/* ---- Quiz ---- */
+.ff-category {
+  display: inline-block;
+  background: #f5f0e8; color: #a07000;
+  font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px;
+  margin-bottom: 12px;
+}
+.ff-tip {
+  background: #f8f8f8; border-left: 3px solid #c9a84c;
+  padding: 10px 14px; border-radius: 0 8px 8px 0;
+  font-size: 0.83rem; color: #666;
+  margin-bottom: 24px; line-height: 1.5;
+}
+.ff-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.ff-opt {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border-radius: 10px;
+  border: 2px solid #e8e8e8; background: #fff;
+  cursor: pointer; text-align: left;
+  font-size: 0.92rem; font-family: inherit; color: #1a1a1a;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.ff-opt:hover { border-color: #c9a84c; background: #fffbf0; transform: translateX(3px); }
+.ff-opt.selected { border-color: #c9a84c; background: #fff8e6; font-weight: 600; }
+.ff-opt-letter {
+  min-width: 28px; height: 28px;
+  background: #f0f0f0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem; color: #888;
+  transition: background 0.15s, color 0.15s;
+}
+.ff-opt.selected .ff-opt-letter { background: #c9a84c; color: #fff; }
+.ff-nav { display: flex; justify-content: space-between; align-items: center; }
+
+/* ---- Buttons ---- */
+.ff-btn-primary {
+  display: inline-block; width: 100%;
+  padding: 15px 28px; border-radius: 8px;
+  background: #c9a84c; color: #fff; border: none;
+  font-size: 1rem; font-weight: 700; font-family: inherit;
+  cursor: pointer; transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.02em;
+}
+.ff-btn-primary:hover:not(:disabled) { background: #a8893a; transform: translateY(-1px); }
+.ff-btn-primary:disabled { background: #ddd; color: #aaa; cursor: not-allowed; }
+.ff-nav .ff-btn-primary { width: auto; padding: 12px 28px; }
+.ff-btn-back {
+  background: none; border: none; color: #888;
+  font-size: 0.9rem; cursor: pointer; font-family: inherit;
+  padding: 8px 0; transition: color 0.2s;
+}
+.ff-btn-back:hover { color: #333; }
+.ff-btn-ghost {
+  display: block; width: 100%; margin-top: 12px;
+  background: none; border: 1.5px solid #ddd; border-radius: 8px;
+  padding: 12px 24px; color: #888; font-family: inherit;
+  font-size: 0.88rem; cursor: pointer; transition: border-color 0.2s, color 0.2s;
+}
+.ff-btn-ghost:hover { border-color: #c9a84c; color: #c9a84c; }
+
+/* ---- Result ---- */
+.ff-result-header { text-align: center; margin-bottom: 20px; }
+.ff-result-badge {
+  display: inline-block;
+  padding: 8px 20px; border-radius: 20px;
+  font-weight: 700; font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+.ff-score-ring-wrap { display: flex; justify-content: center; margin: 16px 0 20px; }
+.ff-score-ring { width: 130px; height: 130px; }
+.ff-ring-anim { transition: stroke-dashoffset 1s ease; }
+.ff-result-msg {
+  background: #f8f8f8; border-radius: 10px;
+  padding: 18px 20px; font-size: 0.92rem;
+  color: #444; line-height: 1.7;
+  margin-bottom: 24px; text-align: center;
+}
+
+/* ---- Breakdown ---- */
+.ff-breakdown { margin-bottom: 28px; display: flex; flex-direction: column; gap: 8px; }
+.ff-breakdown-item { display: flex; align-items: center; gap: 10px; }
+.ff-breakdown-label { font-size: 0.78rem; color: #666; width: 180px; flex-shrink: 0; }
+.ff-breakdown-bar {
+  flex: 1; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden;
+}
+.ff-breakdown-bar div { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.ff-breakdown-score { font-size: 0.78rem; font-weight: 700; color: #888; width: 32px; text-align: right; }
+
+/* ---- Floating Trigger Button ---- */
+#ff-trigger {
+  position: fixed; bottom: 28px; right: 28px; z-index: 9000;
+  background: #1a1a1a; color: #fff;
+  border: none; border-radius: 14px;
+  padding: 14px 20px; font-family: inherit;
+  font-size: 0.82rem; line-height: 1.4;
+  cursor: pointer; text-align: center;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: ffBounce 2s ease-in-out 3s 2;
+}
+#ff-trigger:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.35); }
+#ff-trigger strong { display: block; color: #c9a84c; font-size: 0.9rem; margin-top: 2px; }
+@keyframes ffBounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  #ff-modal { padding: 36px 22px 32px; }
+  .ff-fields { grid-template-columns: 1fr; }
+  .ff-field-full { grid-column: 1; }
+  .ff-title { font-size: 1.3rem; }
+  .ff-breakdown-label { width: 120px; font-size: 0.72rem; }
+  #ff-trigger { bottom: 16px; right: 16px; }
+}
