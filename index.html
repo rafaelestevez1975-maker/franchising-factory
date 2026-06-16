@@ -918,9 +918,36 @@
   </style>
 
   <script>
+  /* ============ SUPABASE CONFIG ============ */
+  const SUPA_URL = 'https://riutcbwillvqjrpaefkb.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdXRjYndpbGx2cWpycGFlZmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDk0MzksImV4cCI6MjA5MDMyNTQzOX0.WR69xD-_dvkG7dN2EkwerPw0Su8vcStNgnha8Ky0grA';
+
+  let supaSession = null; // JWT token após login
+
+  async function supaSignIn(email, password) {
+    const res = await fetch(SUPA_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'apikey': SUPA_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.access_token || null;
+  }
+
+  async function supaGetLeads(token) {
+    const res = await fetch(SUPA_URL + '/rest/v1/ff_leads?order=created_at.desc&limit=500', {
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!res.ok) return [];
+    return await res.json();
+  }
+
   /* ============ ADMIN CONFIG ============ */
-  const ADM_USER = 'rafaelestevez1975@gmail.com';
-  const ADM_PASS = 'R@f@el2018';
 
   const ADM_LINKS = [
     {id:'calendly',  label:'Agendamento (Calendly)',   desc:'Botões "Agende Online"',           def:'https://calendly.com/rafaelestevez'},
@@ -972,7 +999,9 @@
   function adminOpen() {
     document.getElementById('adm-overlay').classList.add('open');
     document.body.style.overflow = 'hidden';
-    if (sessionStorage.getItem('ff-admin-ok')) {
+    const savedToken = sessionStorage.getItem('ff-admin-token');
+    if (savedToken) {
+      supaSession = savedToken;
       showAdmApp();
     } else {
       document.getElementById('adm-login').classList.add('show');
@@ -985,22 +1014,29 @@
 
   /* ============ AUTH ============ */
   function admLogin() {
-    const u = document.getElementById('adm-user').value;
+    const u = document.getElementById('adm-user').value.trim();
     const p = document.getElementById('adm-pass').value;
-    if (u === ADM_USER && p === ADM_PASS) {
-      sessionStorage.setItem('ff-admin-ok','1');
-      document.getElementById('adm-login').classList.remove('show');
-      showAdmApp();
-    } else {
-      const e = document.getElementById('adm-login-err');
-      e.style.display = 'block';
-      setTimeout(() => e.style.display = 'none', 2800);
-    }
+    const btn = document.querySelector('.adm-login-box button');
+    if (btn) { btn.textContent = 'Entrando…'; btn.disabled = true; }
+    supaSignIn(u, p).then(token => {
+      if (btn) { btn.textContent = 'Entrar'; btn.disabled = false; }
+      if (token) {
+        supaSession = token;
+        sessionStorage.setItem('ff-admin-token', token);
+        document.getElementById('adm-login').classList.remove('show');
+        showAdmApp();
+      } else {
+        const e = document.getElementById('adm-login-err');
+        e.style.display = 'block';
+        setTimeout(() => e.style.display = 'none', 2800);
+      }
+    });
   }
   document.getElementById('adm-pass').addEventListener('keydown', e => { if(e.key==='Enter') admLogin(); });
 
   function admLogout() {
-    sessionStorage.removeItem('ff-admin-ok');
+    supaSession = null;
+    sessionStorage.removeItem('ff-admin-token');
     document.getElementById('adm-app').classList.remove('show');
     document.getElementById('adm-login').classList.add('show');
     document.getElementById('adm-user').value = '';
@@ -1015,16 +1051,16 @@
   }
 
   /* ============ NAVIGATION ============ */
-  function admShowPage(id) {
+  async function admShowPage(id) {
     document.querySelectorAll('.adm-page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.adm-nav-item').forEach(b => b.classList.remove('active'));
     const page = document.getElementById('adm-page-' + id);
     if (page) page.classList.add('active');
     const btn = [...document.querySelectorAll('.adm-nav-item')].find(b => b.dataset.page === id);
     if (btn) btn.classList.add('active');
-    if (id === 'dashboard') admRenderDashboard();
-    if (id === 'leads')     admRenderLeads();
-    if (id === 'analytics') admRenderAnalytics();
+    if (id === 'dashboard') await admRenderDashboard();
+    if (id === 'leads')     await admRenderLeads();
+    if (id === 'analytics') await admRenderAnalytics();
     if (id === 'links')     admRenderLinks();
   }
   document.querySelectorAll('.adm-nav-item[data-page]').forEach(btn => {
@@ -1032,7 +1068,19 @@
   });
 
   /* ============ LEADS HELPERS ============ */
-  function admGetLeads() { return JSON.parse(localStorage.getItem('ff-leads') || '[]'); }
+  async function admGetLeads() {
+    if (supaSession) {
+      const rows = await supaGetLeads(supaSession);
+      if (rows && rows.length >= 0) return rows.map(r => ({
+        nome: r.nome, empresa: r.empresa, whatsapp: r.whatsapp,
+        email: r.email, instagram: r.instagram, site: r.site,
+        segmento: r.segmento, score: r.score, date: r.data_br,
+        franqueabilidade: r.franqueabilidade
+      }));
+    }
+    /* fallback local se não autenticado */
+    return JSON.parse(localStorage.getItem('ff-leads') || '[]');
+  }
   function admScoreColor(s) { return s>=80?'#10b981':s>=60?'#3b82f6':s>=40?'#f59e0b':'#ef4444'; }
   function admScoreBadge(s) {
     if(s>=80) return '<span class="adm-badge adm-b-green">Alta</span>';
@@ -1068,8 +1116,9 @@
   }
 
   /* ============ DASHBOARD ============ */
-  function admRenderDashboard() {
-    const leads = admGetLeads();
+  async function admRenderDashboard() {
+    document.getElementById('adm-stats').innerHTML = `<div style="color:#9ca3af;padding:16px">Carregando…</div>`;
+    const leads = await admGetLeads();
     const total = leads.length;
     const alta  = leads.filter(l=>l.score>=80).length;
     const boa   = leads.filter(l=>l.score>=60&&l.score<80).length;
@@ -1080,25 +1129,23 @@
       <div class="adm-stat" style="--c:#3b82f6"><div class="adm-stat-label">Boa Franqueabilidade</div><div class="adm-stat-val">${boa}</div><div class="adm-stat-sub">Score 60–79%</div></div>
       <div class="adm-stat" style="--c:#ef4444"><div class="adm-stat-label">Em Estruturação</div><div class="adm-stat-val">${baixa}</div><div class="adm-stat-sub">Score abaixo de 40%</div></div>
     `;
-    const recent = [...leads].reverse().slice(0,5);
+    const recent = leads.slice(0, 5);
     document.getElementById('adm-recent-table').innerHTML = admLeadsHTML(recent);
   }
 
   /* ============ LEADS PAGE ============ */
-  function admRenderLeads() {
-    const leads = [...admGetLeads()].reverse();
+  async function admRenderLeads() {
+    document.getElementById('adm-leads-table').innerHTML = `<div style="color:#9ca3af;padding:16px">Carregando…</div>`;
+    const leads = await admGetLeads();
     const el = document.getElementById('adm-leads-count');
     if(el) el.textContent = `${leads.length} lead${leads.length!==1?'s':''} captado${leads.length!==1?'s':''}`;
     document.getElementById('adm-leads-table').innerHTML = admLeadsHTML(leads);
   }
   function admClearLeads() {
-    if(!confirm('Apagar todos os leads?')) return;
-    localStorage.removeItem('ff-leads');
-    admRenderLeads(); admRenderDashboard();
-    admToast('Leads apagados.');
+    admToast('Use o painel Supabase para apagar leads.');
   }
-  function admExportCSV() {
-    const leads = admGetLeads();
+  async function admExportCSV() {
+    const leads = await admGetLeads();
     if(!leads.length){ admToast('Nenhum lead para exportar.'); return; }
     const cols=['nome','empresa','whatsapp','email','instagram','site','segmento','score','date'];
     const csv=[cols.join(','),...leads.map(l=>cols.map(k=>`"${(l[k]||'').toString().replace(/"/g,'""')}"`).join(','))].join('\n');
@@ -1109,9 +1156,8 @@
   }
 
   /* ============ ANALYTICS ============ */
-  function admRenderAnalytics() {
-    // Contador de leads no KPI
-    const leads = admGetLeads();
+  async function admRenderAnalytics() {
+    const leads = await admGetLeads();
     const el = document.getElementById('ga-leads-count');
     if (el) el.textContent = leads.length;
   }

@@ -345,10 +345,45 @@
     `;
   }
 
+  /* ---- Supabase config ---- */
+  const SUPA_URL  = 'https://riutcbwillvqjrpaefkb.supabase.co';
+  const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdXRjYndpbGx2cWpycGFlZmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDk0MzksImV4cCI6MjA5MDMyNTQzOX0.WR69xD-_dvkG7dN2EkwerPw0Su8vcStNgnha8Ky0grA';
+
+  async function saveLeadSupabase(data) {
+    const tier = data.score >= 80 ? 'Alta' : data.score >= 60 ? 'Boa' : data.score >= 40 ? 'Média' : 'Baixa';
+    try {
+      await fetch(SUPA_URL + '/rest/v1/ff_leads', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer ' + SUPA_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          nome: data.nome || '',
+          empresa: data.empresa || '',
+          whatsapp: data.whatsapp || '',
+          email: data.email || '',
+          instagram: data.instagram || '',
+          site: data.site || '',
+          segmento: data.segmento || '',
+          score: data.score || 0,
+          franqueabilidade: tier,
+          respostas: data.respostas || null,
+          data_br: data.date || new Date().toLocaleDateString('pt-BR')
+        })
+      });
+    } catch (e) { /* falha silenciosa — fallback localStorage abaixo */ }
+  }
+
   function saveLead(data) {
+    /* fallback local (garante que o painel antigo continue funcionando) */
     const leads = JSON.parse(localStorage.getItem('ff-leads') || '[]');
     leads.push(data);
     localStorage.setItem('ff-leads', JSON.stringify(leads));
+    /* salva no Supabase (assíncrono, não bloqueia o fluxo) */
+    saveLeadSupabase(data);
     emailLead(data);
     notifyNewLead(data);
   }
