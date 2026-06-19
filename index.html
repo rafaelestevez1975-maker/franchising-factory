@@ -919,8 +919,9 @@
 
   <script>
   /* ============ SUPABASE CONFIG ============ */
-  const SUPA_URL = 'https://riutcbwillvqjrpaefkb.supabase.co';
-  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdXRjYndpbGx2cWpycGFlZmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDk0MzksImV4cCI6MjA5MDMyNTQzOX0.WR69xD-_dvkG7dN2EkwerPw0Su8vcStNgnha8Ky0grA';
+  const SUPA_URL    = 'https://riutcbwillvqjrpaefkb.supabase.co';
+  const SUPA_KEY    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdXRjYndpbGx2cWpycGFlZmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDk0MzksImV4cCI6MjA5MDMyNTQzOX0.WR69xD-_dvkG7dN2EkwerPw0Su8vcStNgnha8Ky0grA';
+  const VAPID_PUB   = 'BMZ8F9accuZqce2YwZpZmCjdcrEd9yKiMdQfeKcJnZSTTWAv5q1bkXAlEpWFwAcnPzHNi2Fhzrit3w7bNvpIBI0';
 
   let supaSession = null; // JWT token após login
 
@@ -961,22 +962,77 @@
   ];
 
   /* ============ OPEN / CLOSE ============ */
-  /* ---- Notificações Push (browser) ---- */
-  function admRequestNotif() {
-    if (!('Notification' in window)) {
-      admToast('Seu browser não suporta notificações.'); return;
+  /* ---- Web Push subscription helpers ---- */
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const raw     = atob(base64);
+    return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+  }
+
+  async function admRequestNotif() {
+    const btn    = document.getElementById('adm-notif-btn');
+    const status = document.getElementById('adm-notif-status');
+
+    if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+      admToast('Este browser não suporta Push Notifications.'); return;
     }
-    Notification.requestPermission().then(perm => {
-      if (perm === 'granted') {
-        admToast('✅ Notificações ativadas!');
-        document.getElementById('adm-notif-btn').textContent = '✅ Notificações Ativas';
-        document.getElementById('adm-notif-btn').style.background = '#6b7280';
-        document.getElementById('adm-notif-status').textContent = 'Você receberá alertas no browser quando chegar um novo lead.';
-        new Notification('Franchising Factory', { body: 'Notificações ativadas com sucesso!', icon: 'https://static.wixstatic.com/media/feb376_693663dfe7fe48c3ac3d533f74b20bb7~mv2.png' });
-      } else {
-        admToast('Permissão de notificação negada.');
+    if (!supaSession) {
+      admToast('Faça login no painel antes de ativar notificações.'); return;
+    }
+
+    try {
+      if (btn) { btn.textContent = 'Aguarde…'; btn.disabled = true; }
+
+      // 1. Pedir permissão
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') {
+        admToast('Permissão negada. Habilite nas configurações do browser.'); return;
       }
-    });
+
+      // 2. Obter SW registration
+      const reg = await navigator.serviceWorker.ready;
+
+      // 3. Subscrever ao Push (VAPID)
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUB)
+      });
+
+      // 4. Salvar no Supabase via Edge Function
+      const subJson = sub.toJSON();
+      const res = await fetch(SUPA_URL + '/functions/v1/push-subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + supaSession,
+          'apikey': SUPA_KEY
+        },
+        body: JSON.stringify({
+          endpoint:  subJson.endpoint,
+          keys:      subJson.keys,
+          userAgent: navigator.userAgent
+        })
+      });
+
+      if (res.ok) {
+        admToast('✅ Web Push ativado! Você receberá alertas mesmo com o app fechado.');
+        if (btn)    { btn.textContent = '✅ Push Ativo'; btn.style.background = '#6b7280'; btn.disabled = false; }
+        if (status) status.textContent = 'Web Push ativo neste dispositivo. Você receberá alertas a cada novo lead, mesmo com o app fechado.';
+        // Notificação de teste
+        reg.showNotification('🏭 Franchising Factory', {
+          body: 'Push ativado com sucesso! Você receberá alertas de novos leads.',
+          icon: 'https://static.wixstatic.com/media/feb376_693663dfe7fe48c3ac3d533f74b20bb7~mv2.png',
+          badge: 'https://static.wixstatic.com/media/feb376_693663dfe7fe48c3ac3d533f74b20bb7~mv2.png',
+          tag: 'ff-test'
+        });
+      } else {
+        throw new Error('Falha ao salvar assinatura');
+      }
+    } catch (e) {
+      if (btn) { btn.textContent = '🔔 Ativar Notificações PWA'; btn.disabled = false; }
+      admToast('Erro ao ativar push: ' + e.message);
+    }
   }
 
   /* ---- Config ntfy (app celular) ---- */
@@ -986,14 +1042,38 @@
     alert(msg);
   }
 
-  /* Atualiza botão se notificação já está ativa */
-  function admCheckNotifStatus() {
+  /* Atualiza botão se push já está ativo */
+  async function admCheckNotifStatus() {
+    const btn    = document.getElementById('adm-notif-btn');
+    const status = document.getElementById('adm-notif-status');
+    if (!btn || !status) return;
+    try {
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.getSubscription();
+        if (sub) {
+          btn.textContent = '✅ Push Ativo';
+          btn.style.background = '#6b7280';
+          status.textContent = 'Web Push ativo neste dispositivo. Alertas chegam mesmo com o app fechado.';
+          return;
+        }
+      }
+    } catch (_) {}
     if ('Notification' in window && Notification.permission === 'granted') {
-      const btn = document.getElementById('adm-notif-btn');
-      const status = document.getElementById('adm-notif-status');
-      if (btn) { btn.textContent = '✅ Notificações Ativas'; btn.style.background = '#6b7280'; }
-      if (status) status.textContent = 'Notificações no browser estão ativas. Configure o app ntfy para alertas no celular.';
+      status.textContent = 'Permissão concedida mas push não inscrito. Clique em "Ativar" para finalizar.';
     }
+  }
+
+  /* Ouvir mensagem do Service Worker (toque na notificação → abrir admin) */
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data?.type === 'FF_OPEN_ADMIN') adminOpen();
+    });
+  }
+
+  /* Abrir admin automaticamente se URL tem ?admin=open (link da notificação) */
+  if (new URLSearchParams(location.search).get('admin') === 'open') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(adminOpen, 600));
   }
 
   function adminOpen() {

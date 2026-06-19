@@ -345,9 +345,23 @@
     `;
   }
 
-  /* ---- Supabase config ---- */
-  const SUPA_URL  = 'https://riutcbwillvqjrpaefkb.supabase.co';
-  const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdXRjYndpbGx2cWpycGFlZmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDk0MzksImV4cCI6MjA5MDMyNTQzOX0.WR69xD-_dvkG7dN2EkwerPw0Su8vcStNgnha8Ky0grA';
+  /* ---- Supabase / Edge Functions config ---- */
+  const SUPA_URL       = 'https://riutcbwillvqjrpaefkb.supabase.co';
+  const SUPA_KEY       = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdXRjYndpbGx2cWpycGFlZmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDk0MzksImV4cCI6MjA5MDMyNTQzOX0.WR69xD-_dvkG7dN2EkwerPw0Su8vcStNgnha8Ky0grA';
+  const NOTIFY_SECRET  = 'ff-notify-2026-xK7pQ3mZ';
+
+  async function pushNotifyEdge(score, tier, empresa) {
+    try {
+      await fetch(SUPA_URL + '/functions/v1/push-notify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-ff-secret': NOTIFY_SECRET
+        },
+        body: JSON.stringify({ score, tier, empresa: empresa || '' })
+      });
+    } catch (_) {}
+  }
 
   async function saveLeadSupabase(data) {
     const tier = data.score >= 80 ? 'Alta' : data.score >= 60 ? 'Boa' : data.score >= 40 ? 'Média' : 'Baixa';
@@ -378,12 +392,19 @@
   }
 
   function saveLead(data) {
-    /* fallback local (garante que o painel antigo continue funcionando) */
+    /* fallback local */
     const leads = JSON.parse(localStorage.getItem('ff-leads') || '[]');
     leads.push(data);
     localStorage.setItem('ff-leads', JSON.stringify(leads));
-    /* salva no Supabase (assíncrono, não bloqueia o fluxo) */
+
+    const score = data.score || 0;
+    const tier  = score >= 80 ? 'Alta' : score >= 60 ? 'Boa' : score >= 40 ? 'Média' : 'Baixa';
+
+    /* salva no Supabase */
     saveLeadSupabase(data);
+    /* dispara Web Push via Edge Function */
+    pushNotifyEdge(score, tier, data.empresa);
+    /* email + ntfy fallback */
     emailLead(data);
     notifyNewLead(data);
   }
