@@ -562,7 +562,20 @@
 
     <!-- APP -->
     <div id="adm-app">
-      <aside class="adm-sidebar">
+
+      <!-- TOPBAR MOBILE -->
+      <div class="adm-topbar" id="adm-topbar">
+        <button class="adm-hamburger" id="adm-hamburger" aria-label="Menu" onclick="admToggleSidebar()">
+          <span></span><span></span><span></span>
+        </button>
+        <span class="adm-topbar-title" id="adm-topbar-title">Dashboard</span>
+        <button class="adm-topbar-close" onclick="adminClose()" aria-label="Fechar painel">✕</button>
+      </div>
+
+      <!-- BACKDROP (mobile) -->
+      <div class="adm-backdrop" id="adm-backdrop" onclick="admCloseSidebar()"></div>
+
+      <aside class="adm-sidebar" id="adm-sidebar">
         <div class="adm-sidebar-logo">
           <img src="https://static.wixstatic.com/media/feb376_93a58047a63e4335a6c2a7c771223011~mv2.png/v1/fill/w_370,h_71,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Sem%20t%C3%ADtulo-1_fw.png" alt="FF">
         </div>
@@ -909,11 +922,114 @@
   .adm-empty { text-align: center; padding: 48px 20px; color: #9ca3af; font-size: .88rem; }
   .adm-empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
 
+  /* --- Topbar mobile (oculta no desktop) --- */
+  .adm-topbar {
+    display: none;
+    align-items: center; gap: 12px;
+    background: #111827; color: #fff;
+    padding: 0 16px; height: 56px; flex-shrink: 0;
+    position: sticky; top: 0; z-index: 10;
+    box-shadow: 0 1px 0 rgba(255,255,255,.06);
+  }
+  .adm-hamburger {
+    display: flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 36px; height: 36px; background: none; border: none; cursor: pointer;
+    padding: 4px; border-radius: 6px; flex-shrink: 0;
+  }
+  .adm-hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: #fff; border-radius: 2px;
+    transition: transform .2s, opacity .2s;
+  }
+  .adm-topbar-title {
+    flex: 1; font-size: .95rem; font-weight: 700;
+    color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .adm-topbar-close {
+    background: none; border: none; color: #9ca3af;
+    font-size: 1.1rem; cursor: pointer; padding: 4px 8px;
+    border-radius: 6px; transition: color .15s;
+  }
+  .adm-topbar-close:hover { color: #fff; }
+
+  /* --- Backdrop (mobile drawer overlay) --- */
+  .adm-backdrop {
+    display: none; position: fixed; inset: 0; z-index: 49;
+    background: rgba(0,0,0,.55); backdrop-filter: blur(2px);
+  }
+  .adm-backdrop.open { display: block; }
+
+  /* --- Desktop: layout padrão --- */
+  @media(min-width:769px){
+    #adm-app { flex-direction: row; }
+    .adm-topbar { display: none !important; }
+    .adm-sidebar {
+      width: 230px; height: 100vh;
+      position: sticky; top: 0; flex-shrink: 0;
+    }
+    .adm-main { flex: 1; overflow-y: auto; }
+    .adm-stats { grid-template-columns: repeat(4,1fr); }
+    .adm-analytics-kpis { grid-template-columns: repeat(4,1fr); }
+    .adm-links-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* --- Mobile: topbar + gaveta --- */
   @media(max-width:768px){
-    .adm-sidebar { width: 190px; }
-    .adm-main { padding: 20px 16px; }
-    .adm-stats { grid-template-columns: 1fr 1fr; }
+    /* App vira coluna: topbar em cima, main embaixo */
+    #adm-app { flex-direction: column !important; }
+    #adm-app.show { display: flex; }
+
+    /* Topbar visível */
+    .adm-topbar { display: flex; }
+
+    /* Sidebar: gaveta lateral fora da tela por padrão */
+    .adm-sidebar {
+      position: fixed !important;
+      top: 0; left: 0; bottom: 0;
+      width: 260px !important;
+      height: 100vh !important;
+      z-index: 50;
+      transform: translateX(-100%);
+      transition: transform .25s cubic-bezier(.4,0,.2,1);
+      flex-shrink: 0;
+    }
+    /* Gaveta aberta */
+    .adm-sidebar.open { transform: translateX(0); }
+
+    /* Main ocupa toda a largura */
+    .adm-main {
+      flex: 1; width: 100%;
+      padding: 20px 14px;
+      overflow-y: auto;
+    }
+
+    /* Grids responsivos */
+    .adm-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .adm-analytics-kpis { grid-template-columns: 1fr 1fr; }
     .adm-links-grid { grid-template-columns: 1fr; }
+
+    /* Stats menores no mobile */
+    .adm-stat { padding: 14px 16px; }
+    .adm-stat-val { font-size: 1.4rem; }
+
+    /* Tabela de leads: scroll horizontal */
+    .adm-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .adm-table { min-width: 640px; }
+
+    /* Card de notificações: empilha em coluna */
+    #adm-notif-card > div { flex-direction: column; align-items: flex-start !important; }
+
+    /* Toast embaixo ao centro */
+    #adm-toast { right: 50%; transform: translateX(50%); bottom: 16px; }
+
+    /* Login box menor */
+    .adm-login-box { width: calc(100vw - 40px); padding: 32px 24px; }
+  }
+
+  /* Extra-small phones */
+  @media(max-width:380px){
+    .adm-stats { grid-template-columns: 1fr; }
+    .adm-analytics-kpis { grid-template-columns: 1fr; }
   }
   </style>
 
@@ -960,6 +1076,29 @@
     {id:'popup_cta', label:'CTA do Popup (resultado)', desc:'Botão final do diagnóstico',        def:'https://calendly.com/rafaelestevez'},
     {id:'portfolio', label:'Portfólio / Cases',        desc:'Link da seção de portfólio',        def:'#portfolio'},
   ];
+
+  /* ============ MOBILE SIDEBAR DRAWER ============ */
+  function admToggleSidebar() {
+    const sidebar  = document.getElementById('adm-sidebar');
+    const backdrop = document.getElementById('adm-backdrop');
+    const isOpen   = sidebar.classList.contains('open');
+    isOpen ? admCloseSidebar() : admOpenSidebar();
+  }
+  function admOpenSidebar() {
+    document.getElementById('adm-sidebar').classList.add('open');
+    document.getElementById('adm-backdrop').classList.add('open');
+  }
+  function admCloseSidebar() {
+    document.getElementById('adm-sidebar').classList.remove('open');
+    document.getElementById('adm-backdrop').classList.remove('open');
+  }
+
+  const ADM_PAGE_TITLES = {
+    dashboard: 'Dashboard',
+    leads:     'Leads',
+    analytics: 'Google Analytics',
+    links:     'Links do Site'
+  };
 
   /* ============ OPEN / CLOSE ============ */
   /* ---- Web Push subscription helpers ---- */
@@ -1138,6 +1277,11 @@
     if (page) page.classList.add('active');
     const btn = [...document.querySelectorAll('.adm-nav-item')].find(b => b.dataset.page === id);
     if (btn) btn.classList.add('active');
+    /* Atualiza título da topbar mobile */
+    const titleEl = document.getElementById('adm-topbar-title');
+    if (titleEl) titleEl.textContent = ADM_PAGE_TITLES[id] || id;
+    /* Fecha gaveta no mobile ao navegar */
+    admCloseSidebar();
     if (id === 'dashboard') await admRenderDashboard();
     if (id === 'leads')     await admRenderLeads();
     if (id === 'analytics') await admRenderAnalytics();
