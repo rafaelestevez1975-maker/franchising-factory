@@ -535,6 +535,7 @@
         </a>
       </div>
       <p class="footer-copy">© 2025 Franchising Factory. Todos os direitos reservados.</p>
+      <button onclick="adminOpen()" style="background:none;border:none;color:rgba(255,255,255,.2);font-size:.7rem;cursor:pointer;margin-top:8px;padding:4px 8px;border-radius:4px;font-family:inherit;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.6)'" onmouseout="this.style.color='rgba(255,255,255,.2)'">⚙ admin</button>
       <button onclick="adminOpen()" class="footer-admin-link">Painel Adm</button>
     </div>
   </footer>
@@ -647,65 +648,73 @@
         <!-- ANALYTICS -->
         <div class="adm-page" id="adm-page-analytics">
           <div class="adm-page-header">
-            <h1>Google Analytics</h1>
-            <p>Dashboard de visitas · Propriedade: Franchising Factory (G-HKBB2YT0Z8)</p>
+            <h1>Analytics</h1>
+            <p>Dados do site + Google Analytics 4 (G-HKBB2YT0Z8)</p>
           </div>
 
-          <!-- KPIs rápidos -->
+          <!-- KPIs do próprio site (Supabase) -->
           <div class="adm-analytics-kpis" id="adm-ga-kpis">
             <div class="adm-ga-kpi">
-              <span class="adm-ga-kpi-label">Status do Rastreamento</span>
-              <span class="adm-ga-kpi-val" id="ga-status-badge" style="color:#10b981;font-size:1rem">✅ Ativo</span>
+              <span class="adm-ga-kpi-label">Visitas Hoje</span>
+              <span class="adm-ga-kpi-val" id="pv-today">—</span>
             </div>
             <div class="adm-ga-kpi">
-              <span class="adm-ga-kpi-label">Measurement ID</span>
-              <span class="adm-ga-kpi-val" style="font-size:1rem;font-family:monospace">G-HKBB2YT0Z8</span>
+              <span class="adm-ga-kpi-label">Últimos 7 dias</span>
+              <span class="adm-ga-kpi-val" id="pv-week">—</span>
             </div>
             <div class="adm-ga-kpi">
-              <span class="adm-ga-kpi-label">Leads Captados (total)</span>
+              <span class="adm-ga-kpi-label">Total de Visitas</span>
+              <span class="adm-ga-kpi-val" id="pv-total">—</span>
+            </div>
+            <div class="adm-ga-kpi">
+              <span class="adm-ga-kpi-label">Leads Captados</span>
               <span class="adm-ga-kpi-val" id="ga-leads-count">—</span>
             </div>
-            <div class="adm-ga-kpi">
-              <span class="adm-ga-kpi-label">Domínio</span>
-              <span class="adm-ga-kpi-val" style="font-size:.95rem">franchisingfactory.com.br</span>
+          </div>
+
+          <!-- Gráfico de visitas (últimos 7 dias) -->
+          <div class="adm-card" style="margin-bottom:20px">
+            <div class="adm-card-header">
+              <h3>📅 Visitas por dia — últimos 7 dias</h3>
+              <button class="adm-link-btn" onclick="admLoadAnalytics()">↻ Atualizar</button>
+            </div>
+            <div style="padding:20px">
+              <canvas id="adm-visits-chart" height="80" style="width:100%;display:block"></canvas>
+              <div id="adm-visits-bars" style="display:flex;align-items:flex-end;gap:4px;height:80px;margin-top:0"></div>
             </div>
           </div>
 
-          <!-- Botões de acesso rápido ao GA4 -->
-          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
-            <a href="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/intelligenthome" target="_blank" class="adm-btn-save" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">
-              📊 Abrir GA4 — Página inicial
-            </a>
-            <a href="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/dashboard" target="_blank" class="adm-btn-save" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:#6366f1">
-              📈 Relatório de Tráfego
-            </a>
-            <a href="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/realtime-overview" target="_blank" class="adm-btn-save" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:#10b981">
-              ⚡ Tempo Real
-            </a>
-          </div>
-
-          <!-- iframe do GA4 incorporado -->
-          <div class="adm-card" style="padding:0;overflow:hidden;border-radius:12px">
-            <div style="background:#f8fafc;padding:12px 20px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:between;gap:12px">
-              <span style="font-size:.85rem;font-weight:600;color:#374151">📊 Google Analytics 4 — Franchising Factory</span>
-              <span style="font-size:.78rem;color:#9ca3af;margin-left:auto">Faça login no Google para ver os dados</span>
+          <!-- Acesso ao Google Analytics 4 -->
+          <div class="adm-card" style="margin-bottom:20px">
+            <div class="adm-card-header"><h3>📊 Google Analytics 4</h3></div>
+            <div style="padding:20px">
+              <p style="font-size:.87rem;color:#6b7280;margin-bottom:16px">
+                O Google Analytics está ativo (<strong>G-HKBB2YT0Z8</strong>) e rastreando visitas em <strong>franchisingfactory.com.br</strong>.
+                Acesse o painel completo pelo Google para ver relatórios detalhados de tráfego, conversões e audiência.
+              </p>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <a href="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/intelligenthome" target="_blank" class="adm-btn-save" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-size:.85rem">
+                  📊 Abrir GA4
+                </a>
+                <a href="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/realtime-overview" target="_blank" class="adm-btn-save" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:#10b981;font-size:.85rem">
+                  ⚡ Tempo Real
+                </a>
+                <a href="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/dashboard" target="_blank" class="adm-btn-save" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:#6366f1;font-size:.85rem">
+                  📈 Relatórios
+                </a>
+              </div>
             </div>
-            <iframe
-              id="adm-ga-iframe"
-              src="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/intelligenthome"
-              style="width:100%;height:620px;border:none;display:block"
-              allow="fullscreen"
-            ></iframe>
           </div>
 
-          <!-- Nota sobre propagação DNS -->
-          <div class="adm-card" style="padding:20px;margin-top:16px;background:#fffbeb;border:1px solid #fcd34d">
-            <p style="font-size:.88rem;color:#92400e;margin:0">
-              <strong>⏳ DNS em propagação:</strong> O domínio <code>franchisingfactory.com.br</code> ainda está sendo transferido do Wix para o Vercel (leva até 24h).
-              Enquanto isso, o site está disponível em
-              <a href="https://franchising-factory.vercel.app" target="_blank" style="color:#c9a84c">franchising-factory.vercel.app</a>.
-              Os dados do GA4 começarão a aparecer assim que o DNS propagar.
-            </p>
+          <!-- Status do rastreamento -->
+          <div class="adm-card" style="padding:20px;background:#f0fdf4;border:1px solid #bbf7d0">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:1.4rem">✅</span>
+              <div>
+                <div style="font-weight:700;color:#166534;font-size:.9rem">Rastreamento ativo — G-HKBB2YT0Z8</div>
+                <div style="font-size:.82rem;color:#4b7c59;margin-top:3px">O GA4 está instalado no site e coleta dados de cada visita em franchisingfactory.com.br</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -764,19 +773,28 @@
   }
   .adm-cancel:hover { color: #374151 !important; background: none !important; }
 
-  /* --- App layout --- */
+  /* --- App layout (mobile-first: drawer by default) --- */
   #adm-app {
-    display: none; flex: 1; overflow: hidden;
+    display: none; overflow: hidden;
+    flex-direction: column;          /* mobile: column */
   }
   #adm-app.show { display: flex; }
+
+  /* Sidebar: drawer hidden by default (mobile-first) */
   .adm-sidebar {
-    width: 230px; background: #111827; flex-shrink: 0;
-    display: flex; flex-direction: column; height: 100vh;
-    position: sticky; top: 0;
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 260px; background: #111827;
+    display: flex; flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform .25s cubic-bezier(.4,0,.2,1);
+    z-index: 200;
+    overflow-y: auto;
   }
-  .adm-sidebar-logo { padding: 20px 18px; border-bottom: 1px solid rgba(255,255,255,.08); }
-  .adm-sidebar-logo img { width: 150px; filter: brightness(0) invert(1); }
-  .adm-nav { flex: 1; padding: 8px 0; }
+  .adm-sidebar.open  { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.4); }
+  .adm-sidebar-logo  { padding: 20px 18px; border-bottom: 1px solid rgba(255,255,255,.08); flex-shrink:0; }
+  .adm-sidebar-logo img { width: 140px; filter: brightness(0) invert(1); }
+  .adm-nav           { flex: 1; padding: 8px 0; }
   .adm-nav-label {
     display: block; padding: 16px 18px 6px;
     font-size: .68rem; font-weight: 700; letter-spacing: .1em;
@@ -784,15 +802,15 @@
   }
   .adm-nav-item {
     display: flex; align-items: center; gap: 10px; width: 100%;
-    padding: 11px 18px; background: none; border: none;
-    color: #9ca3af; font-size: .87rem; font-weight: 500;
+    padding: 13px 18px; background: none; border: none;
+    color: #9ca3af; font-size: .9rem; font-weight: 500;
     font-family: inherit; cursor: pointer; text-align: left;
-    transition: background .15s, color .15s, border-left .15s;
+    transition: background .15s, color .15s;
     border-left: 3px solid transparent;
   }
   .adm-nav-item:hover  { background: rgba(255,255,255,.05); color: #fff; }
   .adm-nav-item.active { background: rgba(201,168,76,.15); color: #c9a84c; border-left-color: #c9a84c; }
-  .adm-sidebar-bottom { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,.08); }
+  .adm-sidebar-bottom { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,.08); flex-shrink:0; }
   .adm-user-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .adm-avatar {
     width: 34px; height: 34px; border-radius: 50%; background: #c9a84c;
@@ -804,23 +822,96 @@
   .adm-logout { background: none; border: none; color: #6b7280; font-size: .75rem; cursor: pointer; font-family: inherit; padding: 0; }
   .adm-logout:hover { color: #ef4444; }
 
-  /* --- Main --- */
-  .adm-main { flex: 1; overflow-y: auto; padding: 28px 32px; }
+  /* Topbar (always visible on mobile, hidden on desktop) */
+  .adm-topbar {
+    display: flex; align-items: center; gap: 12px;
+    background: #111827; color: #fff;
+    padding: 0 16px; height: 56px; flex-shrink: 0;
+    position: sticky; top: 0; z-index: 10;
+    box-shadow: 0 1px 0 rgba(255,255,255,.08);
+  }
+  .adm-hamburger {
+    display: flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 38px; height: 38px; background: rgba(255,255,255,.08); border: none;
+    border-radius: 8px; cursor: pointer; padding: 7px; flex-shrink: 0;
+    transition: background .15s;
+  }
+  .adm-hamburger:hover { background: rgba(255,255,255,.15); }
+  .adm-hamburger span  { display: block; width: 100%; height: 2px; background: #fff; border-radius: 2px; }
+  .adm-topbar-title {
+    flex: 1; font-size: .95rem; font-weight: 700; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .adm-topbar-close {
+    background: none; border: none; color: #9ca3af;
+    font-size: 1.2rem; cursor: pointer; padding: 6px 8px;
+    border-radius: 6px; transition: color .15s;
+  }
+  .adm-topbar-close:hover { color: #fff; }
+
+  /* Backdrop */
+  .adm-backdrop {
+    display: none; position: fixed; inset: 0; z-index: 199;
+    background: rgba(0,0,0,.6); backdrop-filter: blur(2px);
+  }
+  .adm-backdrop.open { display: block; }
+
+  /* Main content (mobile) */
+  .adm-main { flex: 1; overflow-y: auto; padding: 20px 14px; min-height: 0; }
   .adm-page { display: none; }
   .adm-page.active { display: block; }
-  .adm-page-header { margin-bottom: 24px; }
-  .adm-page-header h1 { font-size: 1.4rem; font-weight: 700; color: #111827; }
-  .adm-page-header p  { font-size: .88rem; color: #6b7280; margin-top: 3px; }
+  .adm-page-header { margin-bottom: 20px; }
+  .adm-page-header h1 { font-size: 1.25rem; font-weight: 700; color: #111827; }
+  .adm-page-header p  { font-size: .85rem; color: #6b7280; margin-top: 3px; }
 
-  /* --- Stats --- */
-  .adm-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+  /* Stats grid: 2 cols on mobile */
+  .adm-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
   .adm-stat {
-    background: #fff; border-radius: 10px; padding: 20px;
+    background: #fff; border-radius: 10px; padding: 14px 16px;
     border: 1px solid #e5e7eb; border-left: 4px solid var(--c,#c9a84c);
   }
-  .adm-stat-label { font-size: .72rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
-  .adm-stat-val   { font-size: 1.8rem; font-weight: 700; color: #111827; line-height: 1; }
-  .adm-stat-sub   { font-size: .75rem; color: #6b7280; margin-top: 4px; }
+  .adm-stat-label { font-size: .68rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
+  .adm-stat-val   { font-size: 1.5rem; font-weight: 700; color: #111827; line-height: 1; }
+  .adm-stat-sub   { font-size: .72rem; color: #6b7280; margin-top: 4px; }
+
+  /* Analytics KPIs: 2 cols on mobile */
+  .adm-analytics-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .adm-ga-kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; }
+  .adm-ga-kpi-label { display: block; font-size: .68rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .adm-ga-kpi-val { font-size: 1.3rem; font-weight: 700; color: #111827; }
+
+  .adm-links-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+
+  /* Desktop override */
+  @media(min-width:769px){
+    #adm-app { flex-direction: row; }
+    .adm-topbar { display: none; }
+    .adm-backdrop { display: none !important; }
+    .adm-sidebar {
+      position: relative;
+      transform: none !important;
+      width: 230px;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: none;
+      transition: none;
+    }
+    .adm-main { padding: 28px 32px; }
+    .adm-page-header h1 { font-size: 1.4rem; }
+    .adm-stats { grid-template-columns: repeat(4,1fr); gap: 16px; }
+    .adm-stat { padding: 20px; }
+    .adm-stat-val { font-size: 1.8rem; }
+    .adm-analytics-kpis { grid-template-columns: repeat(4,1fr); gap: 16px; }
+    .adm-ga-kpi { padding: 18px 20px; }
+    .adm-ga-kpi-val { font-size: 1.5rem; }
+    .adm-links-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Extra-small phones */
+  @media(max-width:380px){
+    .adm-stats { grid-template-columns: 1fr; }
+    .adm-analytics-kpis { grid-template-columns: 1fr; }
+  }
 
   /* --- Card --- */
   .adm-card { background: #fff; border-radius: 10px; border: 1px solid #e5e7eb; overflow: hidden; margin-bottom: 20px; }
@@ -859,12 +950,6 @@
   }
   .adm-export-btn:hover { background: #e5e7eb; }
 
-  /* --- GA --- */
-  .adm-analytics-kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 20px; }
-  .adm-ga-kpi { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 18px 20px; }
-  .adm-ga-kpi-label { display: block; font-size: .75rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
-  .adm-ga-kpi-val { font-size: 1.5rem; font-weight: 700; color: #111827; }
-  @media(max-width:768px){ .adm-analytics-kpis { grid-template-columns: repeat(2,1fr); } }
   .adm-ga-row { display: flex; gap: 12px; align-items: flex-end; }
   .adm-label { display: block; font-size: .82rem; font-weight: 600; margin-bottom: 6px; color: #374151; }
   .adm-input {
@@ -922,114 +1007,15 @@
   .adm-empty { text-align: center; padding: 48px 20px; color: #9ca3af; font-size: .88rem; }
   .adm-empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
 
-  /* --- Topbar mobile (oculta no desktop) --- */
-  .adm-topbar {
-    display: none;
-    align-items: center; gap: 12px;
-    background: #111827; color: #fff;
-    padding: 0 16px; height: 56px; flex-shrink: 0;
-    position: sticky; top: 0; z-index: 10;
-    box-shadow: 0 1px 0 rgba(255,255,255,.06);
-  }
-  .adm-hamburger {
-    display: flex; flex-direction: column; justify-content: center; gap: 5px;
-    width: 36px; height: 36px; background: none; border: none; cursor: pointer;
-    padding: 4px; border-radius: 6px; flex-shrink: 0;
-  }
-  .adm-hamburger span {
-    display: block; width: 22px; height: 2px;
-    background: #fff; border-radius: 2px;
-    transition: transform .2s, opacity .2s;
-  }
-  .adm-topbar-title {
-    flex: 1; font-size: .95rem; font-weight: 700;
-    color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .adm-topbar-close {
-    background: none; border: none; color: #9ca3af;
-    font-size: 1.1rem; cursor: pointer; padding: 4px 8px;
-    border-radius: 6px; transition: color .15s;
-  }
-  .adm-topbar-close:hover { color: #fff; }
+  /* --- Tabela de leads: scroll horizontal --- */
+  .adm-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .adm-table { min-width: 640px; }
 
-  /* --- Backdrop (mobile drawer overlay) --- */
-  .adm-backdrop {
-    display: none; position: fixed; inset: 0; z-index: 49;
-    background: rgba(0,0,0,.55); backdrop-filter: blur(2px);
-  }
-  .adm-backdrop.open { display: block; }
-
-  /* --- Desktop: layout padrão --- */
-  @media(min-width:769px){
-    #adm-app { flex-direction: row; }
-    .adm-topbar { display: none !important; }
-    .adm-sidebar {
-      width: 230px; height: 100vh;
-      position: sticky; top: 0; flex-shrink: 0;
-    }
-    .adm-main { flex: 1; overflow-y: auto; }
-    .adm-stats { grid-template-columns: repeat(4,1fr); }
-    .adm-analytics-kpis { grid-template-columns: repeat(4,1fr); }
-    .adm-links-grid { grid-template-columns: 1fr 1fr; }
-  }
-
-  /* --- Mobile: topbar + gaveta --- */
+  /* --- Card de notificações: empilha em coluna no mobile --- */
   @media(max-width:768px){
-    /* App vira coluna: topbar em cima, main embaixo */
-    #adm-app { flex-direction: column !important; }
-    #adm-app.show { display: flex; }
-
-    /* Topbar visível */
-    .adm-topbar { display: flex; }
-
-    /* Sidebar: gaveta lateral fora da tela por padrão */
-    .adm-sidebar {
-      position: fixed !important;
-      top: 0; left: 0; bottom: 0;
-      width: 260px !important;
-      height: 100vh !important;
-      z-index: 50;
-      transform: translateX(-100%);
-      transition: transform .25s cubic-bezier(.4,0,.2,1);
-      flex-shrink: 0;
-    }
-    /* Gaveta aberta */
-    .adm-sidebar.open { transform: translateX(0); }
-
-    /* Main ocupa toda a largura */
-    .adm-main {
-      flex: 1; width: 100%;
-      padding: 20px 14px;
-      overflow-y: auto;
-    }
-
-    /* Grids responsivos */
-    .adm-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
-    .adm-analytics-kpis { grid-template-columns: 1fr 1fr; }
-    .adm-links-grid { grid-template-columns: 1fr; }
-
-    /* Stats menores no mobile */
-    .adm-stat { padding: 14px 16px; }
-    .adm-stat-val { font-size: 1.4rem; }
-
-    /* Tabela de leads: scroll horizontal */
-    .adm-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .adm-table { min-width: 640px; }
-
-    /* Card de notificações: empilha em coluna */
     #adm-notif-card > div { flex-direction: column; align-items: flex-start !important; }
-
-    /* Toast embaixo ao centro */
     #adm-toast { right: 50%; transform: translateX(50%); bottom: 16px; }
-
-    /* Login box menor */
     .adm-login-box { width: calc(100vw - 40px); padding: 32px 24px; }
-  }
-
-  /* Extra-small phones */
-  @media(max-width:380px){
-    .adm-stats { grid-template-columns: 1fr; }
-    .adm-analytics-kpis { grid-template-columns: 1fr; }
   }
   </style>
 
@@ -1382,9 +1368,72 @@
   /* ============ ANALYTICS ============ */
   async function admRenderAnalytics() {
     const leads = await admGetLeads();
-    const el = document.getElementById('ga-leads-count');
-    if (el) el.textContent = leads.length;
+    const leadsEl = document.getElementById('ga-leads-count');
+    if (leadsEl) leadsEl.textContent = leads.length;
+
+    /* Carregar page views do Supabase */
+    if (!supaSession) return;
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+
+      const [resTotal, resWeek, resToday] = await Promise.all([
+        fetch(SUPA_URL + '/rest/v1/ff_pageviews?select=count', {
+          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + supaSession, 'Prefer': 'count=exact', 'Range': '0-0' }
+        }),
+        fetch(SUPA_URL + '/rest/v1/ff_pageviews?created_at=gte.' + weekAgo + '&select=count', {
+          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + supaSession, 'Prefer': 'count=exact', 'Range': '0-0' }
+        }),
+        fetch(SUPA_URL + '/rest/v1/ff_pageviews?data_br=eq.' + today + '&select=count', {
+          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + supaSession, 'Prefer': 'count=exact', 'Range': '0-0' }
+        })
+      ]);
+
+      const parseCount = r => {
+        const cr = r.headers.get('content-range');
+        return cr ? parseInt(cr.split('/')[1]) || 0 : 0;
+      };
+
+      const total = parseCount(resTotal);
+      const week  = parseCount(resWeek);
+      const tod   = parseCount(resToday);
+
+      const pvTotal = document.getElementById('pv-total');
+      const pvWeek  = document.getElementById('pv-week');
+      const pvToday = document.getElementById('pv-today');
+      if (pvTotal) pvTotal.textContent = total.toLocaleString('pt-BR');
+      if (pvWeek)  pvWeek.textContent  = week.toLocaleString('pt-BR');
+      if (pvToday) pvToday.textContent = tod.toLocaleString('pt-BR');
+
+      /* Gráfico de barras simples (últimos 7 dias) */
+      const barsRes = await fetch(
+        SUPA_URL + '/rest/v1/ff_pageviews?created_at=gte.' + weekAgo + '&select=data_br&order=data_br.asc',
+        { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + supaSession } }
+      );
+      const barsData = barsRes.ok ? await barsRes.json() : [];
+      const counts = {};
+      barsData.forEach(r => { counts[r.data_br] = (counts[r.data_br] || 0) + 1; });
+      const days = Array.from({length:7}, (_,i) => {
+        const d = new Date(Date.now() - (6-i)*86400000);
+        return d.toISOString().slice(0,10);
+      });
+      const max = Math.max(1, ...days.map(d => counts[d]||0));
+      const barsEl = document.getElementById('adm-visits-bars');
+      if (barsEl) {
+        barsEl.innerHTML = days.map(d => {
+          const cnt = counts[d] || 0;
+          const h   = Math.round((cnt/max)*100);
+          const lbl = d.slice(5).replace('-','/');
+          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <span style="font-size:.65rem;color:#6b7280;font-weight:600">${cnt||''}</span>
+            <div style="width:100%;height:${h}px;background:#c9a84c;border-radius:4px 4px 0 0;min-height:${cnt?2:0}px;transition:height .3s"></div>
+            <span style="font-size:.6rem;color:#9ca3af">${lbl}</span>
+          </div>`;
+        }).join('');
+      }
+    } catch(e) { console.warn('Analytics load error:', e); }
   }
+  function admLoadAnalytics() { admRenderAnalytics(); }
   function admUpdateGAStatus(id) {
     const el = document.getElementById('adm-ga-status');
     if(!el) return;
@@ -1439,6 +1488,21 @@
 
   // Carregar GA salvo ao abrir a página
   (function(){ const id=localStorage.getItem('ff-ga-id'); if(id&&id.startsWith('G-')) admInjectGA(id); })();
+
+  /* Registrar page view no Supabase */
+  (function(){
+    const today = new Date().toISOString().slice(0,10);
+    fetch(SUPA_URL + '/rest/v1/ff_pageviews', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ page: location.pathname, data_br: today, referrer: document.referrer || null })
+    }).catch(()=>{});
+  })();
   </script>
 
 <!-- PWA: Service Worker + Install Prompt -->
@@ -1486,6 +1550,21 @@ if (new URLSearchParams(location.search).get('diagnostico') === '1') {
     setTimeout(() => { if (window.ffOpen) ffOpen(); }, 800);
   });
 }
+</script>
+<script>
+// Force video autoplay on mobile
+(function(){
+  const v = document.querySelector('.hero-video');
+  if (!v) return;
+  v.setAttribute('playsinline','');
+  v.setAttribute('webkit-playsinline','');
+  v.muted = true;
+  const tryPlay = () => v.play().catch(()=>{});
+  if (document.readyState === 'complete') tryPlay();
+  else window.addEventListener('load', tryPlay);
+  document.addEventListener('touchstart', tryPlay, {once:true});
+  document.addEventListener('click', tryPlay, {once:true});
+})();
 </script>
 </body>
 </html>
