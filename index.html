@@ -608,17 +608,15 @@
           <div class="adm-page-header"><h1>Dashboard</h1><p>Visão geral do site e captação de leads</p></div>
           <div class="adm-stats" id="adm-stats"></div>
 
-          <!-- Notificações push -->
-          <div class="adm-card" id="adm-notif-card" style="margin-bottom:20px;padding:20px 24px;background:#f0fdf4;border:1px solid #bbf7d0">
-            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-              <div style="flex:1;min-width:200px">
-                <div style="font-weight:700;font-size:.95rem;color:#166534;margin-bottom:4px">🔔 Notificações de Novos Leads</div>
-                <div style="font-size:.83rem;color:#4b7c59;line-height:1.5" id="adm-notif-status">Ative para receber alertas no celular e desktop quando chegar um novo lead.</div>
+          <!-- Notificações push — status only, ativação automática no login -->
+          <div class="adm-card" id="adm-notif-card" style="margin-bottom:20px;padding:16px 24px;background:#f0fdf4;border:1px solid #bbf7d0">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <span style="font-size:1.3rem">🔔</span>
+              <div style="flex:1;min-width:180px">
+                <div style="font-weight:700;font-size:.9rem;color:#166534">Notificações de Novos Leads</div>
+                <div style="font-size:.82rem;color:#4b7c59;margin-top:2px" id="adm-notif-status">Verificando…</div>
               </div>
-              <div style="display:flex;gap:10px;flex-wrap:wrap">
-                <button onclick="admRequestNotif()" id="adm-notif-btn" class="adm-btn-save" style="background:#16a34a;white-space:nowrap">🔔 Ativar Notificações</button>
-                <button onclick="admSetupNtfy()" class="adm-btn-save" style="background:#0891b2;white-space:nowrap">📱 Config. App Celular</button>
-              </div>
+              <button onclick="admForceEnableNotif()" id="adm-notif-btn" class="adm-btn-save" style="background:#16a34a;white-space:nowrap;display:none">🔔 Permitir no Browser</button>
             </div>
           </div>
 
@@ -1098,98 +1096,94 @@
     return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
   }
 
-  async function admRequestNotif() {
-    const btn    = document.getElementById('adm-notif-btn');
-    const status = document.getElementById('adm-notif-status');
-
-    if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
-      admToast('Este browser não suporta Push Notifications.'); return;
-    }
-    if (!supaSession) {
-      admToast('Faça login no painel antes de ativar notificações.'); return;
-    }
-
-    try {
-      if (btn) { btn.textContent = 'Aguarde…'; btn.disabled = true; }
-
-      // 1. Pedir permissão
-      const perm = await Notification.requestPermission();
-      if (perm !== 'granted') {
-        admToast('Permissão negada. Habilite nas configurações do browser.'); return;
-      }
-
-      // 2. Obter SW registration
-      const reg = await navigator.serviceWorker.ready;
-
-      // 3. Subscrever ao Push (VAPID)
-      const sub = await reg.pushManager.subscribe({
+  /* Inscreve este dispositivo no push e salva no Supabase */
+  async function admSubscribePush() {
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUB)
       });
-
-      // 4. Salvar no Supabase via Edge Function
-      const subJson = sub.toJSON();
-      const res = await fetch(SUPA_URL + '/functions/v1/push-subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + supaSession,
-          'apikey': SUPA_KEY
-        },
-        body: JSON.stringify({
-          endpoint:  subJson.endpoint,
-          keys:      subJson.keys,
-          userAgent: navigator.userAgent
-        })
-      });
-
-      if (res.ok) {
-        admToast('✅ Web Push ativado! Você receberá alertas mesmo com o app fechado.');
-        if (btn)    { btn.textContent = '✅ Push Ativo'; btn.style.background = '#6b7280'; btn.disabled = false; }
-        if (status) status.textContent = 'Web Push ativo neste dispositivo. Você receberá alertas a cada novo lead, mesmo com o app fechado.';
-        // Notificação de teste
-        reg.showNotification('🏭 Franchising Factory', {
-          body: 'Push ativado com sucesso! Você receberá alertas de novos leads.',
-          icon: 'https://static.wixstatic.com/media/feb376_693663dfe7fe48c3ac3d533f74b20bb7~mv2.png',
-          badge: 'https://static.wixstatic.com/media/feb376_693663dfe7fe48c3ac3d533f74b20bb7~mv2.png',
-          tag: 'ff-test'
-        });
-      } else {
-        throw new Error('Falha ao salvar assinatura');
-      }
-    } catch (e) {
-      if (btn) { btn.textContent = '🔔 Ativar Notificações PWA'; btn.disabled = false; }
-      admToast('Erro ao ativar push: ' + e.message);
     }
+    const subJson = sub.toJSON();
+    await fetch(SUPA_URL + '/functions/v1/push-subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + supaSession, 'apikey': SUPA_KEY },
+      body: JSON.stringify({ endpoint: subJson.endpoint, keys: subJson.keys, userAgent: navigator.userAgent })
+    });
+    return sub;
   }
 
-  /* ---- Config ntfy (app celular) ---- */
-  function admSetupNtfy() {
-    const topic = localStorage.getItem('ff-ntfy-topic') || 'ff-leads-franchising-factory';
-    const msg = `📱 Para receber alertas no celular:\n\n1. Baixe o app "ntfy" (iOS ou Android) — é gratuito\n2. No app, inscreva-se no tópico:\n\n   ${topic}\n\n3. Pronto! Você receberá notificações a cada novo lead.\n\nSeu tópico: ${topic}`;
-    alert(msg);
-  }
-
-  /* Atualiza botão se push já está ativo */
+  /* Chamada automaticamente no login — sem botão, sem prompt manual */
   async function admCheckNotifStatus() {
     const btn    = document.getElementById('adm-notif-btn');
     const status = document.getElementById('adm-notif-status');
-    if (!btn || !status) return;
-    try {
-      if ('serviceWorker' in navigator && 'PushManager' in window) {
-        const reg = await navigator.serviceWorker.ready;
-        const sub = await reg.pushManager.getSubscription();
-        if (sub) {
-          btn.textContent = '✅ Push Ativo';
-          btn.style.background = '#6b7280';
-          status.textContent = 'Web Push ativo neste dispositivo. Alertas chegam mesmo com o app fechado.';
-          return;
-        }
-      }
-    } catch (_) {}
-    if ('Notification' in window && Notification.permission === 'granted') {
-      status.textContent = 'Permissão concedida mas push não inscrito. Clique em "Ativar" para finalizar.';
+    if (!status) return;
+
+    /* Browser sem suporte */
+    if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+      status.textContent = 'Este browser não suporta notificações push.';
+      return;
     }
+
+    const perm = Notification.permission;
+
+    if (perm === 'denied') {
+      status.textContent = '⚠️ Notificações bloqueadas no browser. Vá em Configurações → Site → Notificações e permita para ' + location.hostname + '.';
+      if (btn) btn.style.display = 'none';
+      return;
+    }
+
+    if (perm === 'granted') {
+      /* Já tem permissão — garantir que está subscrito */
+      try {
+        await admSubscribePush();
+        status.textContent = '✅ Notificações ativas — você receberá alertas de novos leads neste dispositivo.';
+      } catch(e) {
+        status.textContent = '✅ Permissão concedida. (Erro ao registrar endpoint: ' + e.message + ')';
+      }
+      if (btn) btn.style.display = 'none';
+      return;
+    }
+
+    /* perm === 'default' → solicitar automaticamente */
+    status.textContent = 'Solicitando permissão de notificação…';
+    try {
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        await admSubscribePush();
+        status.textContent = '✅ Notificações ativas — você receberá alertas de novos leads neste dispositivo.';
+        if (btn) btn.style.display = 'none';
+      } else {
+        status.textContent = '⚠️ Permissão negada. Clique em "Permitir no Browser" ou habilite nas configurações do browser.';
+        if (btn) btn.style.display = '';
+      }
+    } catch(e) {
+      status.textContent = 'Erro ao solicitar permissão: ' + e.message;
+    }
+  }
+
+  /* Botão de fallback — só aparece se o browser bloqueou e o usuário quer tentar de novo */
+  async function admForceEnableNotif() {
+    const btn = document.getElementById('adm-notif-btn');
+    const status = document.getElementById('adm-notif-status');
+    if (btn) { btn.disabled = true; btn.textContent = 'Aguarde…'; }
+    try {
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        await admSubscribePush();
+        status.textContent = '✅ Notificações ativas — você receberá alertas de novos leads neste dispositivo.';
+        if (btn) btn.style.display = 'none';
+      } else {
+        status.textContent = '⚠️ Permissão negada. Vá em Configurações do browser → Notificações → Permita para ' + location.hostname + '.';
+        if (btn) { btn.disabled = false; btn.textContent = '🔔 Permitir no Browser'; }
+      }
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.textContent = '🔔 Permitir no Browser'; }
+      admToast('Erro: ' + e.message);
+    }
+  }
   }
 
   /* Ouvir mensagem do Service Worker (toque na notificação → abrir admin) */
