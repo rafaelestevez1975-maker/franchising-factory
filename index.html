@@ -647,73 +647,76 @@
 
         <!-- ANALYTICS -->
         <div class="adm-page" id="adm-page-analytics">
-          <div class="adm-page-header">
-            <h1>Analytics</h1>
-            <p>Dados do site + Google Analytics 4 (G-HKBB2YT0Z8)</p>
+          <div class="adm-page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+            <div><h1>Analytics</h1><p>Google Analytics 4 — G-HKBB2YT0Z8</p></div>
+            <button class="adm-link-btn" onclick="admLoadAnalytics()" style="font-size:.82rem">↻ Atualizar</button>
           </div>
 
-          <!-- KPIs do próprio site (Supabase) -->
-          <div class="adm-analytics-kpis" id="adm-ga-kpis">
-            <div class="adm-ga-kpi">
-              <span class="adm-ga-kpi-label">Visitas Hoje</span>
-              <span class="adm-ga-kpi-val" id="pv-today">—</span>
-            </div>
-            <div class="adm-ga-kpi">
-              <span class="adm-ga-kpi-label">Últimos 7 dias</span>
-              <span class="adm-ga-kpi-val" id="pv-week">—</span>
-            </div>
-            <div class="adm-ga-kpi">
-              <span class="adm-ga-kpi-label">Total de Visitas</span>
-              <span class="adm-ga-kpi-val" id="pv-total">—</span>
-            </div>
-            <div class="adm-ga-kpi">
-              <span class="adm-ga-kpi-label">Leads Captados</span>
-              <span class="adm-ga-kpi-val" id="ga-leads-count">—</span>
-            </div>
+          <!-- GA4 KPIs (últimos 30 dias) -->
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;margin-bottom:8px">Google Analytics — últimos 30 dias</div>
+          <div class="adm-analytics-kpis" id="adm-ga4-kpis" style="margin-bottom:20px">
+            <div class="adm-ga-kpi"><span class="adm-ga-kpi-label">Usuários</span><span class="adm-ga-kpi-val" id="ga4-users">—</span></div>
+            <div class="adm-ga-kpi"><span class="adm-ga-kpi-label">Sessões</span><span class="adm-ga-kpi-val" id="ga4-sessions">—</span></div>
+            <div class="adm-ga-kpi"><span class="adm-ga-kpi-label">Page Views</span><span class="adm-ga-kpi-val" id="ga4-pageviews">—</span></div>
+            <div class="adm-ga-kpi"><span class="adm-ga-kpi-label">Novos Usuários</span><span class="adm-ga-kpi-val" id="ga4-newusers">—</span></div>
           </div>
 
-          <!-- Gráfico de visitas (últimos 7 dias) -->
+          <!-- GA4 gráfico diário (30 dias) -->
           <div class="adm-card" style="margin-bottom:20px">
-            <div class="adm-card-header">
-              <h3>📅 Visitas por dia — últimos 7 dias</h3>
-              <button class="adm-link-btn" onclick="admLoadAnalytics()">↻ Atualizar</button>
-            </div>
-            <div style="padding:20px">
-              <canvas id="adm-visits-chart" height="80" style="width:100%;display:block"></canvas>
-              <div id="adm-visits-bars" style="display:flex;align-items:flex-end;gap:4px;height:80px;margin-top:0"></div>
+            <div class="adm-card-header"><h3>📈 Usuários por dia — últimos 30 dias (GA4)</h3></div>
+            <div style="padding:16px 20px 20px">
+              <div id="ga4-daily-bars" style="display:flex;align-items:flex-end;gap:2px;height:90px"></div>
+              <div id="ga4-daily-labels" style="display:flex;gap:2px;margin-top:4px"></div>
             </div>
           </div>
 
-          <!-- Acesso ao Google Analytics 4 -->
+          <!-- GA4 canais de tráfego -->
           <div class="adm-card" style="margin-bottom:20px">
-            <div class="adm-card-header"><h3>📊 Google Analytics 4</h3></div>
+            <div class="adm-card-header"><h3>🔀 Canais de Tráfego (GA4)</h3></div>
+            <div id="ga4-channels" style="padding:16px 20px"></div>
+          </div>
+
+          <!-- Setup: como conectar o GA4 -->
+          <div class="adm-card" id="ga4-setup-card" style="margin-bottom:20px;display:none">
+            <div class="adm-card-header" style="background:#fffbeb;border-bottom:1px solid #fcd34d"><h3 style="color:#92400e">⚙️ Conectar Google Analytics 4</h3></div>
             <div style="padding:20px">
-              <p style="font-size:.87rem;color:#6b7280;margin-bottom:16px">
-                O Google Analytics está ativo (<strong>G-HKBB2YT0Z8</strong>) e rastreando visitas em <strong>franchisingfactory.com.br</strong>.
-                Acesse o painel completo pelo Google para ver relatórios detalhados de tráfego, conversões e audiência.
-              </p>
-              <div style="display:flex;gap:10px;flex-wrap:wrap">
-                <a href="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/intelligenthome" target="_blank" class="adm-btn-save" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-size:.85rem">
-                  📊 Abrir GA4
-                </a>
-                <a href="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/realtime-overview" target="_blank" class="adm-btn-save" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:#10b981;font-size:.85rem">
-                  ⚡ Tempo Real
-                </a>
-                <a href="https://analytics.google.com/analytics/web/#/a397003493p541502011/reports/dashboard" target="_blank" class="adm-btn-save" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:#6366f1;font-size:.85rem">
-                  📈 Relatórios
-                </a>
+              <p style="font-size:.87rem;color:#6b7280;margin-bottom:16px">Para ver os dados do GA4 diretamente aqui, configure uma <strong>Service Account</strong> em ~3 minutos:</p>
+              <div style="display:flex;flex-direction:column;gap:10px;font-size:.84rem;color:#374151">
+                <div style="display:flex;gap:10px;align-items:flex-start">
+                  <span style="min-width:22px;height:22px;border-radius:50%;background:#c9a84c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0">1</span>
+                  <span>Acesse <a href="https://console.cloud.google.com/iam-admin/serviceaccounts" target="_blank" style="color:#3b82f6">console.cloud.google.com</a> → <strong>IAM &amp; Admin → Service Accounts</strong> → <em>Create Service Account</em></span>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start">
+                  <span style="min-width:22px;height:22px;border-radius:50%;background:#c9a84c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0">2</span>
+                  <span>Na conta criada, clique em <strong>Keys → Add Key → JSON</strong>. Salve o arquivo.</span>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start">
+                  <span style="min-width:22px;height:22px;border-radius:50%;background:#c9a84c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0">3</span>
+                  <span>No <a href="https://analytics.google.com" target="_blank" style="color:#3b82f6">Google Analytics</a> → Administrador → Propriedade → <strong>Gerenciamento de acesso</strong> → Adicione o e-mail da service account como <em>Leitor</em>.</span>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start">
+                  <span style="min-width:22px;height:22px;border-radius:50%;background:#c9a84c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0">4</span>
+                  <span>Cole o conteúdo do JSON abaixo e clique em <strong>Salvar</strong>:</span>
+                </div>
               </div>
+              <textarea id="ga4-sa-key" rows="5" placeholder='{"type":"service_account","project_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...","client_email":"...@....iam.gserviceaccount.com",...}' style="width:100%;margin-top:12px;padding:10px;border:1.5px solid #e5e7eb;border-radius:8px;font-family:monospace;font-size:.75rem;resize:vertical;outline:none"></textarea>
+              <button onclick="admSaveGA4Key()" class="adm-btn-save" style="margin-top:10px;width:100%">💾 Salvar Chave e Conectar GA4</button>
+              <p id="ga4-save-status" style="font-size:.8rem;margin-top:8px;color:#6b7280"></p>
             </div>
           </div>
 
-          <!-- Status do rastreamento -->
-          <div class="adm-card" style="padding:20px;background:#f0fdf4;border:1px solid #bbf7d0">
-            <div style="display:flex;align-items:center;gap:10px">
-              <span style="font-size:1.4rem">✅</span>
-              <div>
-                <div style="font-weight:700;color:#166534;font-size:.9rem">Rastreamento ativo — G-HKBB2YT0Z8</div>
-                <div style="font-size:.82rem;color:#4b7c59;margin-top:3px">O GA4 está instalado no site e coleta dados de cada visita em franchisingfactory.com.br</div>
-              </div>
+          <!-- Dados do próprio site (Supabase — sempre disponível) -->
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;margin-bottom:8px;margin-top:4px">Rastreamento próprio do site</div>
+          <div class="adm-analytics-kpis" style="margin-bottom:20px">
+            <div class="adm-ga-kpi"><span class="adm-ga-kpi-label">Visitas Hoje</span><span class="adm-ga-kpi-val" id="pv-today">—</span></div>
+            <div class="adm-ga-kpi"><span class="adm-ga-kpi-label">Últimos 7 dias</span><span class="adm-ga-kpi-val" id="pv-week">—</span></div>
+            <div class="adm-ga-kpi"><span class="adm-ga-kpi-label">Total de Visitas</span><span class="adm-ga-kpi-val" id="pv-total">—</span></div>
+            <div class="adm-ga-kpi"><span class="adm-ga-kpi-label">Leads Captados</span><span class="adm-ga-kpi-val" id="ga-leads-count">—</span></div>
+          </div>
+          <div class="adm-card" style="margin-bottom:16px">
+            <div class="adm-card-header"><h3>📅 Visitas por dia — últimos 7 dias</h3></div>
+            <div style="padding:16px 20px 20px">
+              <div id="adm-visits-bars" style="display:flex;align-items:flex-end;gap:4px;height:90px"></div>
             </div>
           </div>
         </div>
@@ -1367,45 +1370,100 @@
 
   /* ============ ANALYTICS ============ */
   async function admRenderAnalytics() {
+    if (!supaSession) return;
+
+    /* ── 1. Leads count ── */
     const leads = await admGetLeads();
     const leadsEl = document.getElementById('ga-leads-count');
     if (leadsEl) leadsEl.textContent = leads.length;
 
-    /* Carregar page views do Supabase */
-    if (!supaSession) return;
+    /* ── 2. GA4 via Edge Function ── */
     try {
-      const today = new Date().toISOString().slice(0, 10);
+      const ga4Res = await fetch(SUPA_URL + '/functions/v1/ga4-report', {
+        headers: { 'Authorization': 'Bearer ' + supaSession, 'Content-Type': 'application/json' }
+      });
+      const ga4 = ga4Res.ok ? await ga4Res.json() : null;
+
+      const setupCard = document.getElementById('ga4-setup-card');
+
+      if (!ga4 || !ga4.configured) {
+        /* Mostrar card de configuração */
+        if (setupCard) setupCard.style.display = '';
+        document.getElementById('ga4-users').textContent     = '—';
+        document.getElementById('ga4-sessions').textContent  = '—';
+        document.getElementById('ga4-pageviews').textContent = '—';
+        document.getElementById('ga4-newusers').textContent  = '—';
+        document.getElementById('ga4-channels').innerHTML    =
+          '<p style="font-size:.84rem;color:#9ca3af;padding:4px 0">Configure a chave da service account acima para ver os dados.</p>';
+        document.getElementById('ga4-daily-bars').innerHTML  = '';
+      } else {
+        if (setupCard) setupCard.style.display = 'none';
+        const fmt = n => (n || 0).toLocaleString('pt-BR');
+
+        document.getElementById('ga4-users').textContent     = fmt(ga4.totals?.users);
+        document.getElementById('ga4-sessions').textContent  = fmt(ga4.totals?.sessions);
+        document.getElementById('ga4-pageviews').textContent = fmt(ga4.totals?.pageviews);
+        document.getElementById('ga4-newusers').textContent  = fmt(ga4.totals?.newUsers);
+
+        /* Gráfico de barras GA4 — 30 dias */
+        const dailyEl = document.getElementById('ga4-daily-bars');
+        if (dailyEl && ga4.daily?.length) {
+          const vals = ga4.daily.map(d => d.users || 0);
+          const max30 = Math.max(1, ...vals);
+          dailyEl.innerHTML = ga4.daily.map((d, i) => {
+            const h = Math.round((d.users / max30) * 80);
+            const lbl = d.date ? d.date.slice(4).replace(/(\d{2})(\d{2})/, '$1/$2') : '';
+            const showLbl = i % 7 === 0 || i === ga4.daily.length - 1;
+            return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" title="${d.date}: ${d.users} usuários">
+              <div style="width:100%;height:${h}px;background:#c9a84c;border-radius:3px 3px 0 0;min-height:${d.users?2:0}px"></div>
+              <span style="font-size:.55rem;color:${showLbl?'#9ca3af':'transparent'}">${lbl}</span>
+            </div>`;
+          }).join('');
+        }
+
+        /* Canais de tráfego */
+        const channelsEl = document.getElementById('ga4-channels');
+        if (channelsEl && ga4.source?.length) {
+          const total = ga4.source.reduce((s, c) => s + (c.sessions || 0), 0) || 1;
+          channelsEl.innerHTML = ga4.source.slice(0, 8).map(c => {
+            const pct = Math.round((c.sessions / total) * 100);
+            return `<div style="margin-bottom:10px">
+              <div style="display:flex;justify-content:space-between;font-size:.82rem;color:#374151;margin-bottom:3px">
+                <span>${c.channel || c.source || 'Direto'}</span>
+                <span style="font-weight:700">${c.sessions?.toLocaleString('pt-BR')} <span style="color:#9ca3af;font-weight:400">(${pct}%)</span></span>
+              </div>
+              <div style="height:5px;background:#f3f4f6;border-radius:3px">
+                <div style="height:5px;background:#c9a84c;border-radius:3px;width:${pct}%;transition:width .4s"></div>
+              </div>
+            </div>`;
+          }).join('');
+        } else if (channelsEl) {
+          channelsEl.innerHTML = '<p style="font-size:.84rem;color:#9ca3af;padding:4px 0">Sem dados de canais ainda.</p>';
+        }
+      }
+    } catch(e) {
+      console.warn('GA4 Edge Function error:', e);
+    }
+
+    /* ── 3. Page views próprios (Supabase — sempre disponível) ── */
+    try {
+      const today   = new Date().toISOString().slice(0, 10);
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+      const H = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + supaSession, 'Prefer': 'count=exact', 'Range': '0-0' };
 
       const [resTotal, resWeek, resToday] = await Promise.all([
-        fetch(SUPA_URL + '/rest/v1/ff_pageviews?select=count', {
-          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + supaSession, 'Prefer': 'count=exact', 'Range': '0-0' }
-        }),
-        fetch(SUPA_URL + '/rest/v1/ff_pageviews?created_at=gte.' + weekAgo + '&select=count', {
-          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + supaSession, 'Prefer': 'count=exact', 'Range': '0-0' }
-        }),
-        fetch(SUPA_URL + '/rest/v1/ff_pageviews?data_br=eq.' + today + '&select=count', {
-          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + supaSession, 'Prefer': 'count=exact', 'Range': '0-0' }
-        })
+        fetch(SUPA_URL + '/rest/v1/ff_pageviews?select=count', { headers: H }),
+        fetch(SUPA_URL + '/rest/v1/ff_pageviews?created_at=gte.' + weekAgo + '&select=count', { headers: H }),
+        fetch(SUPA_URL + '/rest/v1/ff_pageviews?data_br=eq.' + today + '&select=count', { headers: H })
       ]);
 
-      const parseCount = r => {
-        const cr = r.headers.get('content-range');
-        return cr ? parseInt(cr.split('/')[1]) || 0 : 0;
-      };
+      const parseCount = r => { const cr = r.headers.get('content-range'); return cr ? parseInt(cr.split('/')[1]) || 0 : 0; };
+      const [pvTotalEl, pvWeekEl, pvTodayEl] = ['pv-total','pv-week','pv-today'].map(id => document.getElementById(id));
+      if (pvTotalEl) pvTotalEl.textContent = parseCount(resTotal).toLocaleString('pt-BR');
+      if (pvWeekEl)  pvWeekEl.textContent  = parseCount(resWeek).toLocaleString('pt-BR');
+      if (pvTodayEl) pvTodayEl.textContent = parseCount(resToday).toLocaleString('pt-BR');
 
-      const total = parseCount(resTotal);
-      const week  = parseCount(resWeek);
-      const tod   = parseCount(resToday);
-
-      const pvTotal = document.getElementById('pv-total');
-      const pvWeek  = document.getElementById('pv-week');
-      const pvToday = document.getElementById('pv-today');
-      if (pvTotal) pvTotal.textContent = total.toLocaleString('pt-BR');
-      if (pvWeek)  pvWeek.textContent  = week.toLocaleString('pt-BR');
-      if (pvToday) pvToday.textContent = tod.toLocaleString('pt-BR');
-
-      /* Gráfico de barras simples (últimos 7 dias) */
+      /* Mini-gráfico 7 dias */
       const barsRes = await fetch(
         SUPA_URL + '/rest/v1/ff_pageviews?created_at=gte.' + weekAgo + '&select=data_br&order=data_br.asc',
         { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + supaSession } }
@@ -1413,27 +1471,48 @@
       const barsData = barsRes.ok ? await barsRes.json() : [];
       const counts = {};
       barsData.forEach(r => { counts[r.data_br] = (counts[r.data_br] || 0) + 1; });
-      const days = Array.from({length:7}, (_,i) => {
-        const d = new Date(Date.now() - (6-i)*86400000);
-        return d.toISOString().slice(0,10);
-      });
-      const max = Math.max(1, ...days.map(d => counts[d]||0));
+      const days = Array.from({length:7}, (_,i) => new Date(Date.now() - (6-i)*86400000).toISOString().slice(0,10));
+      const max7 = Math.max(1, ...days.map(d => counts[d]||0));
       const barsEl = document.getElementById('adm-visits-bars');
       if (barsEl) {
         barsEl.innerHTML = days.map(d => {
           const cnt = counts[d] || 0;
-          const h   = Math.round((cnt/max)*100);
-          const lbl = d.slice(5).replace('-','/');
+          const h   = Math.round((cnt / max7) * 80);
           return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
             <span style="font-size:.65rem;color:#6b7280;font-weight:600">${cnt||''}</span>
-            <div style="width:100%;height:${h}px;background:#c9a84c;border-radius:4px 4px 0 0;min-height:${cnt?2:0}px;transition:height .3s"></div>
-            <span style="font-size:.6rem;color:#9ca3af">${lbl}</span>
+            <div style="width:100%;height:${h}px;background:#c9a84c;border-radius:4px 4px 0 0;min-height:${cnt?2:0}px"></div>
+            <span style="font-size:.6rem;color:#9ca3af">${d.slice(5).replace('-','/')}</span>
           </div>`;
         }).join('');
       }
-    } catch(e) { console.warn('Analytics load error:', e); }
+    } catch(e) { console.warn('Pageviews load error:', e); }
   }
   function admLoadAnalytics() { admRenderAnalytics(); }
+
+  async function admSaveGA4Key() {
+    const key = document.getElementById('ga4-sa-key')?.value?.trim();
+    const status = document.getElementById('ga4-save-status');
+    if (!key) { if(status) status.textContent = 'Cole o JSON da service account.'; return; }
+    try { JSON.parse(key); } catch(e) { if(status) status.textContent = 'JSON inválido — verifique o arquivo.'; return; }
+    if (status) status.textContent = '⏳ Salvando no Supabase...';
+    try {
+      const res = await fetch(SUPA_URL + '/functions/v1/set-ga4-key', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + supaSession, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key })
+      });
+      if (res.ok) {
+        if (status) status.textContent = '✅ Chave salva! Atualizando dados...';
+        document.getElementById('ga4-sa-key').value = '';
+        setTimeout(() => admRenderAnalytics(), 1500);
+      } else {
+        const err = await res.text();
+        if (status) status.textContent = '❌ Erro: ' + err;
+      }
+    } catch(e) {
+      if (status) status.textContent = '❌ Erro de conexão.';
+    }
+  }
   function admUpdateGAStatus(id) {
     const el = document.getElementById('adm-ga-status');
     if(!el) return;
