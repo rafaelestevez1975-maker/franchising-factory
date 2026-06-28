@@ -156,6 +156,7 @@
 .post-hero-img-wrap {
   position: relative;
   overflow: hidden;
+  height: 100%;
 }
 .post-hero-img-title {
   position: absolute;
