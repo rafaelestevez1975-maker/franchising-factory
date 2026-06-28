@@ -565,6 +565,9 @@ body {
 }
 .footer-nav a:hover { color: var(--gold); }
 .footer-social { display: flex; gap: 16px; }
+.footer-social a { color: rgba(255,255,255,.55); transition: color .2s; display: flex; align-items: center; }
+.footer-social a:hover { color: #c9a84c; }
+.footer-social a svg { width: 26px; height: 26px; }
 .footer-social a img { width: 28px; height: 28px; filter: brightness(0) invert(0.7); transition: filter 0.2s; }
 .footer-social a:hover img { filter: brightness(0) invert(1); }
 .footer-copy { font-size: 0.8rem; color: #666; text-align: center; }
