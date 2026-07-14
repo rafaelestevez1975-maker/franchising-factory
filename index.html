@@ -526,12 +526,12 @@
         <!-- E-Book 1 — substitua a imagem pelo caminho real da capa -->
         <div class="ebook-card" onclick="ebookClick(0)">
           <div class="ebook-cover" id="ebook-cover-0">
-            <img src="ebooks/capa_ebook_20motivos.png" alt="20 Motivos para Franquear seu Negócio" style="width:100%;height:100%;object-fit:cover;display:block">
+            <img src="ebooks/capa_ebook1.png" alt="20 Motivos para Franquear sua Marca" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
           <div class="ebook-info">
             <span class="ebook-tag">Guia Prático</span>
-            <h3 class="ebook-title" id="ebook-title-0">20 Motivos para Franquear seu Negócio</h3>
-            <p class="ebook-desc" id="ebook-desc-0">Descubra os 20 principais motivos que mostram por que franquear é o caminho certo para escalar seu negócio com segurança e rentabilidade.</p>
+            <h3 class="ebook-title" id="ebook-title-0">20 Motivos para Franquear sua Marca</h3>
+            <p class="ebook-desc" id="ebook-desc-0">20 razões concretas para escalar seu negócio com franchising — segurança, capital de terceiros e crescimento acelerado.</p>
             <button class="ebook-btn" id="ebook-btn-0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Baixar Grátis
@@ -542,17 +542,12 @@
         <!-- E-Book 2 -->
         <div class="ebook-card" onclick="ebookClick(1)">
           <div class="ebook-cover" id="ebook-cover-1">
-            <!-- COLOQUE AQUI: <img src="ebooks/capa-ebook-2.jpg" alt="Título do E-Book 2"> -->
-            <div class="ebook-cover-placeholder">
-              <span class="ebook-icon">📗</span>
-              <span class="ebook-placeholder-label">Capa do E-Book 2</span>
-              <span class="ebook-placeholder-hint">Substitua pelo arquivo de imagem</span>
-            </div>
+            <img src="ebooks/capa_ebook2.png" alt="A Lei do Franchising para Empreendedores" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
           <div class="ebook-info">
-            <span class="ebook-tag">Investimento</span>
-            <h3 class="ebook-title" id="ebook-title-1">E-Book 2</h3>
-            <p class="ebook-desc" id="ebook-desc-1">Adicione aqui o título e a descrição do seu segundo e-book sobre franchising.</p>
+            <span class="ebook-tag">Legislação</span>
+            <h3 class="ebook-title" id="ebook-title-1">A Lei do Franchising para Empreendedores</h3>
+            <p class="ebook-desc" id="ebook-desc-1">Entenda a Lei 13.966/2019 de forma clara e objetiva — seus direitos, obrigações e como se proteger antes de assinar qualquer contrato.</p>
             <button class="ebook-btn" id="ebook-btn-1">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Baixar Grátis
@@ -563,17 +558,12 @@
         <!-- E-Book 3 -->
         <div class="ebook-card" onclick="ebookClick(2)">
           <div class="ebook-cover" id="ebook-cover-2">
-            <!-- COLOQUE AQUI: <img src="ebooks/capa-ebook-3.jpg" alt="Título do E-Book 3"> -->
-            <div class="ebook-cover-placeholder">
-              <span class="ebook-icon">📙</span>
-              <span class="ebook-placeholder-label">Capa do E-Book 3</span>
-              <span class="ebook-placeholder-hint">Substitua pelo arquivo de imagem</span>
-            </div>
+            <img src="ebooks/capa_ebook3.png" alt="Guia Completo da COF" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
           <div class="ebook-info">
-            <span class="ebook-tag">Estratégia</span>
-            <h3 class="ebook-title" id="ebook-title-2">E-Book 3</h3>
-            <p class="ebook-desc" id="ebook-desc-2">Adicione aqui o título e a descrição do seu terceiro e-book sobre franchising.</p>
+            <span class="ebook-tag">Manual Técnico</span>
+            <h3 class="ebook-title" id="ebook-title-2">Guia Completo da COF</h3>
+            <p class="ebook-desc" id="ebook-desc-2">Como preparar a Circular de Oferta de Franquia item por item, conforme a Lei 13.966/2019, sem erros jurídicos.</p>
             <button class="ebook-btn" id="ebook-btn-2">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Baixar Grátis
@@ -1841,9 +1831,9 @@
 (function(){
   // E-book metadata — update titles/descs when user provides real info
   const EBOOKS = [
-    { title: '20 Motivos para Franquear seu Negócio', desc: 'Guia completo com 20 razões práticas para escalar seu negócio via franchising.', file: 'ebooks/20-motivos-para-franquear-seu-negocio.pdf' },
-    { title: 'E-Book 2 — Em breve', desc: 'Novo material em preparação. Fique atento!', file: null },
-    { title: 'E-Book 3 — Em breve', desc: 'Novo material em preparação. Fique atento!', file: null },
+    { title: '20 Motivos para Franquear sua Marca', desc: 'Guia com 20 razões concretas para escalar seu negócio via franchising com segurança e rentabilidade.', file: 'ebooks/ebook1-20-motivos-franquear-sua-marca.pdf' },
+    { title: 'A Lei do Franchising para Empreendedores', desc: 'Tudo que você precisa saber sobre a Lei 13.966/2019 antes de franquear seu negócio.', file: 'ebooks/ebook2-lei-do-franchising.pdf' },
+    { title: 'Guia Completo da COF', desc: 'Como preparar a Circular de Oferta de Franquia conforme a legislação vigente.', file: 'ebooks/ebook3-guia-cof-lei-13966.pdf' },
   ];
 
   const LS_KEY = 'ff_ebook_unlocked';
