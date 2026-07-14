@@ -563,8 +563,8 @@ body {
 }
 .ebook-cover {
   position: relative;
-  height: 280px;
-  background: #e8e4dd;
+  aspect-ratio: 900 / 1273;   /* formato livro — mostra a capa inteira sem cortar */
+  background: #0c1a38;
   overflow: hidden;
 }
 .ebook-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
