@@ -189,6 +189,7 @@
         </div>
         <a href="#portfolio" class="nav-link">Portfólio</a>
         <a href="#midia" class="nav-link">Mídia</a>
+        <a href="#ebooks" class="nav-link">E-Books</a>
         <a href="/blog/" class="nav-link">Blog</a>
         <a href="#agendar" class="nav-link">Contato</a>
       </nav>
@@ -513,6 +514,148 @@
       </div>
     </div>
   </section>
+
+  <!-- E-BOOKS -->
+  <section class="ebooks-section" id="ebooks">
+    <div class="container">
+      <p class="section-label">Material Gratuito</p>
+      <h2 class="section-title">E-Books sobre <span>Franchising</span></h2>
+      <p class="section-subtitle">Conhecimento prático e aprofundado para quem quer franquear seu negócio ou investir em franquias. Baixe gratuitamente preenchendo um rápido cadastro.</p>
+      <div class="ebooks-grid">
+
+        <!-- E-Book 1 — substitua a imagem pelo caminho real da capa -->
+        <div class="ebook-card" onclick="ebookClick(0)">
+          <div class="ebook-cover" id="ebook-cover-0">
+            <!-- COLOQUE AQUI: <img src="ebooks/capa-ebook-1.jpg" alt="Título do E-Book 1"> -->
+            <div class="ebook-cover-placeholder">
+              <span class="ebook-icon">📘</span>
+              <span class="ebook-placeholder-label">Capa do E-Book 1</span>
+              <span class="ebook-placeholder-hint">Substitua pelo arquivo de imagem</span>
+            </div>
+          </div>
+          <div class="ebook-info">
+            <span class="ebook-tag">Guia Prático</span>
+            <h3 class="ebook-title" id="ebook-title-0">E-Book 1</h3>
+            <p class="ebook-desc" id="ebook-desc-0">Adicione aqui o título e a descrição do seu primeiro e-book sobre franchising.</p>
+            <button class="ebook-btn" id="ebook-btn-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar Grátis
+            </button>
+          </div>
+        </div>
+
+        <!-- E-Book 2 -->
+        <div class="ebook-card" onclick="ebookClick(1)">
+          <div class="ebook-cover" id="ebook-cover-1">
+            <!-- COLOQUE AQUI: <img src="ebooks/capa-ebook-2.jpg" alt="Título do E-Book 2"> -->
+            <div class="ebook-cover-placeholder">
+              <span class="ebook-icon">📗</span>
+              <span class="ebook-placeholder-label">Capa do E-Book 2</span>
+              <span class="ebook-placeholder-hint">Substitua pelo arquivo de imagem</span>
+            </div>
+          </div>
+          <div class="ebook-info">
+            <span class="ebook-tag">Investimento</span>
+            <h3 class="ebook-title" id="ebook-title-1">E-Book 2</h3>
+            <p class="ebook-desc" id="ebook-desc-1">Adicione aqui o título e a descrição do seu segundo e-book sobre franchising.</p>
+            <button class="ebook-btn" id="ebook-btn-1">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar Grátis
+            </button>
+          </div>
+        </div>
+
+        <!-- E-Book 3 -->
+        <div class="ebook-card" onclick="ebookClick(2)">
+          <div class="ebook-cover" id="ebook-cover-2">
+            <!-- COLOQUE AQUI: <img src="ebooks/capa-ebook-3.jpg" alt="Título do E-Book 3"> -->
+            <div class="ebook-cover-placeholder">
+              <span class="ebook-icon">📙</span>
+              <span class="ebook-placeholder-label">Capa do E-Book 3</span>
+              <span class="ebook-placeholder-hint">Substitua pelo arquivo de imagem</span>
+            </div>
+          </div>
+          <div class="ebook-info">
+            <span class="ebook-tag">Estratégia</span>
+            <h3 class="ebook-title" id="ebook-title-2">E-Book 3</h3>
+            <p class="ebook-desc" id="ebook-desc-2">Adicione aqui o título e a descrição do seu terceiro e-book sobre franchising.</p>
+            <button class="ebook-btn" id="ebook-btn-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar Grátis
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /ebooks-grid -->
+    </div>
+  </section>
+
+  <!-- MODAL E-BOOK: formulário de cadastro -->
+  <div id="ebook-modal-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px" onclick="if(event.target===this)ebookCloseModal()">
+    <div id="ebook-modal" style="background:#fff;border-radius:16px;max-width:480px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.25);overflow:hidden;position:relative;max-height:90vh;overflow-y:auto">
+      <!-- Header -->
+      <div style="background:#1a1a1a;padding:28px 28px 20px;position:relative">
+        <button onclick="ebookCloseModal()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;line-height:1">✕</button>
+        <div style="font-size:.72rem;font-weight:700;color:#c9a84c;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Material Gratuito</div>
+        <h2 style="font-family:'Playfair Display',serif;color:#fff;font-size:1.3rem;line-height:1.3;margin:0" id="ebook-modal-title">Baixar E-Book</h2>
+        <p style="color:rgba(255,255,255,.6);font-size:.85rem;margin-top:8px;margin-bottom:0">Preencha uma vez e libere o download de todos os e-books gratuitamente.</p>
+      </div>
+      <!-- Formulário -->
+      <div id="ebook-form-wrap" style="padding:24px 28px">
+        <form id="ebook-form" onsubmit="ebookSubmit(event)">
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:.78rem;font-weight:600;color:#374151;margin-bottom:5px">Nome completo *</label>
+            <input type="text" id="eb-nome" required placeholder="Seu nome" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.9rem;outline:none;box-sizing:border-box;font-family:inherit" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e5e7eb'">
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:.78rem;font-weight:600;color:#374151;margin-bottom:5px">E-mail *</label>
+            <input type="email" id="eb-email" required placeholder="seu@email.com" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.9rem;outline:none;box-sizing:border-box;font-family:inherit" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e5e7eb'">
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:.78rem;font-weight:600;color:#374151;margin-bottom:5px">WhatsApp *</label>
+            <input type="tel" id="eb-whats" required placeholder="(11) 99999-9999" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.9rem;outline:none;box-sizing:border-box;font-family:inherit" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e5e7eb'">
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:.78rem;font-weight:600;color:#374151;margin-bottom:5px">Empresa / Marca</label>
+            <input type="text" id="eb-empresa" placeholder="Nome da sua empresa (opcional)" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:.9rem;outline:none;box-sizing:border-box;font-family:inherit" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#e5e7eb'">
+          </div>
+          <div style="margin-bottom:20px">
+            <label style="display:block;font-size:.78rem;font-weight:600;color:#374151;margin-bottom:8px">Você é: *</label>
+            <div style="display:flex;gap:10px">
+              <label style="flex:1;cursor:pointer">
+                <input type="radio" name="eb-perfil" value="dono" required style="display:none" id="eb-radio-dono">
+                <div class="eb-radio-card" onclick="ebSelectPerfil('dono')" id="eb-card-dono">
+                  <div style="font-size:1.3rem;margin-bottom:4px">🏢</div>
+                  <div style="font-size:.82rem;font-weight:600;color:#374151">Dono de negócio</div>
+                  <div style="font-size:.72rem;color:#9ca3af">Quero franquear</div>
+                </div>
+              </label>
+              <label style="flex:1;cursor:pointer">
+                <input type="radio" name="eb-perfil" value="franqueado" required style="display:none" id="eb-radio-franqueado">
+                <div class="eb-radio-card" onclick="ebSelectPerfil('franqueado')" id="eb-card-franqueado">
+                  <div style="font-size:1.3rem;margin-bottom:4px">🤝</div>
+                  <div style="font-size:.82rem;font-weight:600;color:#374151">Futuro franqueado</div>
+                  <div style="font-size:.72rem;color:#9ca3af">Quero investir</div>
+                </div>
+              </label>
+            </div>
+          </div>
+          <p id="eb-form-err" style="display:none;font-size:.8rem;color:#ef4444;margin-bottom:10px"></p>
+          <button type="submit" id="eb-submit-btn" style="width:100%;padding:13px;background:#c9a84c;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:700;cursor:pointer;transition:background .2s;font-family:inherit">
+            Liberar Acesso e Baixar →
+          </button>
+        </form>
+      </div>
+      <!-- Sucesso -->
+      <div id="ebook-success-wrap" style="display:none;padding:32px 28px;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:12px">🎉</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:8px">Acesso liberado!</h3>
+        <p style="font-size:.88rem;color:#6b7280;margin-bottom:24px">Obrigado! Agora você pode baixar todos os e-books.</p>
+        <div id="ebook-download-btns" style="display:flex;flex-direction:column;gap:10px"></div>
+        <button onclick="ebookCloseModal()" style="margin-top:16px;background:none;border:1px solid #e5e7eb;color:#6b7280;padding:8px 20px;border-radius:6px;cursor:pointer;font-size:.85rem;font-family:inherit">Fechar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- INSTAGRAM FEED -->
   <section class="instagram">
@@ -1697,6 +1840,140 @@
     }).catch(()=>{});
   })();
   </script>
+
+<!-- E-BOOKS JS -->
+<script>
+(function(){
+  // E-book metadata — update titles/descs when user provides real info
+  const EBOOKS = [
+    { title: 'E-Book 1', desc: 'Adicione aqui a descrição do seu primeiro e-book.', file: '#ebook1' },
+    { title: 'E-Book 2', desc: 'Adicione aqui a descrição do seu segundo e-book.', file: '#ebook2' },
+    { title: 'E-Book 3', desc: 'Adicione aqui a descrição do seu terceiro e-book.', file: '#ebook3' },
+  ];
+
+  const LS_KEY = 'ff_ebook_unlocked';
+  let pendingIdx = null;
+  let perfil = null;
+
+  function isUnlocked() {
+    return localStorage.getItem(LS_KEY) === '1';
+  }
+
+  window.ebookClick = function(idx) {
+    pendingIdx = idx;
+    if (isUnlocked()) {
+      openDownload(idx);
+    } else {
+      openModal(idx);
+    }
+  };
+
+  function openModal(idx) {
+    const eb = EBOOKS[idx];
+    document.getElementById('ebook-modal-title').textContent = 'Baixar: ' + eb.title;
+    document.getElementById('ebook-form-wrap').style.display = 'block';
+    document.getElementById('ebook-success-wrap').style.display = 'none';
+    perfil = null;
+    ['dono','franqueado'].forEach(p => {
+      document.getElementById('eb-card-'+p).classList.remove('selected');
+    });
+    document.getElementById('ebook-form').reset();
+    document.getElementById('eb-form-err').style.display = 'none';
+    const ov = document.getElementById('ebook-modal-overlay');
+    ov.style.display = 'flex';
+    ov.style.alignItems = 'center';
+    ov.style.justifyContent = 'center';
+  }
+
+  window.ebookCloseModal = function() {
+    document.getElementById('ebook-modal-overlay').style.display = 'none';
+    pendingIdx = null;
+  };
+
+  window.ebSelectPerfil = function(p) {
+    perfil = p;
+    document.getElementById('eb-radio-'+p).checked = true;
+    ['dono','franqueado'].forEach(k => {
+      document.getElementById('eb-card-'+k).classList.toggle('selected', k === p);
+    });
+  };
+
+  window.ebookSubmit = async function(e) {
+    e.preventDefault();
+    const nome    = document.getElementById('eb-nome').value.trim();
+    const email   = document.getElementById('eb-email').value.trim();
+    const whats   = document.getElementById('eb-whats').value.trim();
+    const empresa = document.getElementById('eb-empresa').value.trim();
+    const errEl   = document.getElementById('eb-form-err');
+
+    if (!nome || !email || !whats || !perfil) {
+      errEl.textContent = 'Por favor preencha todos os campos obrigatórios e selecione seu perfil.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('eb-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    errEl.style.display = 'none';
+
+    // Save lead to Supabase (reuse saveLeadSupabase from franqueavel.js)
+    try {
+      if (typeof saveLeadSupabase === 'function') {
+        await saveLeadSupabase({
+          nome, email, whatsapp: whats, empresa,
+          segmento: 'ebook-' + (perfil === 'dono' ? 'franqueador' : 'franqueado'),
+          score: 0, tier: 'ebook'
+        });
+      }
+    } catch(_) {}
+
+    localStorage.setItem(LS_KEY, '1');
+    btn.disabled = false;
+    btn.textContent = 'Liberar Acesso e Baixar →';
+
+    // Show success with all download buttons
+    document.getElementById('ebook-form-wrap').style.display = 'none';
+    buildDownloadButtons();
+    document.getElementById('ebook-success-wrap').style.display = 'block';
+  };
+
+  function buildDownloadButtons() {
+    const wrap = document.getElementById('ebook-download-btns');
+    wrap.innerHTML = EBOOKS.map((eb, i) =>
+      `<a href="${eb.file}" download style="display:flex;align-items:center;gap:10px;background:#f3f4f6;border:1.5px solid #e5e7eb;border-radius:8px;padding:12px 16px;text-decoration:none;color:#1a1a1a;font-weight:600;font-size:.88rem;transition:border-color .2s" onmouseover="this.style.borderColor='#c9a84c'" onmouseout="this.style.borderColor='#e5e7eb'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ${eb.title}
+      </a>`
+    ).join('');
+  }
+
+  function openDownload(idx) {
+    // Already unlocked — show modal with download buttons directly
+    const eb = EBOOKS[idx];
+    document.getElementById('ebook-modal-title').textContent = eb.title;
+    document.getElementById('ebook-form-wrap').style.display = 'none';
+    buildDownloadButtons();
+    document.getElementById('ebook-success-wrap').style.display = 'block';
+    const ov = document.getElementById('ebook-modal-overlay');
+    ov.style.display = 'flex';
+    ov.style.alignItems = 'center';
+    ov.style.justifyContent = 'center';
+  }
+
+  // Update button label for already-unlocked users
+  document.addEventListener('DOMContentLoaded', function() {
+    if (isUnlocked()) {
+      document.querySelectorAll('.ebook-btn').forEach(b => {
+        b.innerHTML = b.innerHTML.replace('Baixar Grátis', 'Download');
+      });
+    }
+    // Fix modal overlay initial display (set to none overriding inline style)
+    const ov = document.getElementById('ebook-modal-overlay');
+    if (ov) ov.style.display = 'none';
+  });
+})();
+</script>
 
 <!-- PWA: Service Worker + Install Prompt -->
 <div id="pwa-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9998;background:#1a1a1a;color:#fff;padding:14px 20px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.3);display:none;align-items:center;gap:14px;max-width:360px;width:calc(100% - 40px)">
