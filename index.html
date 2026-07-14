@@ -1902,16 +1902,27 @@
     btn.textContent = 'Enviando…';
     errEl.style.display = 'none';
 
-    // Save lead to Supabase (reuse saveLeadSupabase from franqueavel.js)
+    // Save lead directly to Supabase (franqueavel.js keeps saveLeadSupabase private in an IIFE)
+    const SUPA_URL = 'https://riutcbwillvqjrpaefkb.supabase.co';
+    const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdXRjYndpbGx2cWpycGFlZmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3NDk0MzksImV4cCI6MjA5MDMyNTQzOX0.WR69xD-_dvkG7dN2EkwerPw0Su8vcStNgnha8Ky0grA';
     try {
-      if (typeof saveLeadSupabase === 'function') {
-        await saveLeadSupabase({
+      await fetch(SUPA_URL + '/rest/v1/ff_leads', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer ' + SUPA_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
           nome, email, whatsapp: whats, empresa,
           segmento: 'ebook-' + (perfil === 'dono' ? 'franqueador' : 'franqueado'),
-          score: 0, tier: 'ebook'
-        });
-      }
-    } catch(_) {}
+          score: 0,
+          franqueabilidade: 'E-Book',
+          data_br: new Date().toLocaleDateString('pt-BR')
+        })
+      });
+    } catch(_) { /* falha de rede não bloqueia o download */ }
 
     localStorage.setItem(LS_KEY, '1');
     btn.disabled = false;
