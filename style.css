@@ -541,6 +541,153 @@ body {
 }
 .portfolio-gallery img:hover { transform: scale(1.03); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
 
+/* ---- MICROFRANQUIAS ---- */
+.micro { padding: 72px 0; background: #fafafa; }
+.micro-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 44px;
+}
+.micro-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-top: 3px solid var(--gold);
+  border-radius: 12px;
+  padding: 28px 24px;
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+.micro-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,.09); }
+.micro-icon { font-size: 2.4rem; margin-bottom: 14px; }
+.micro-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  color: var(--dark);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.micro-card p { font-size: .9rem; color: var(--gray); line-height: 1.6; }
+
+/* ---- AUTOMAÇÃO / IA ---- */
+.tech { padding: 80px 0; background: var(--dark); }
+.tech .section-label { color: var(--gold); }
+.tech .section-title { color: #fff; }
+.tech .section-subtitle { color: rgba(255,255,255,.72); }
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+  margin-top: 44px;
+}
+.tech-card {
+  background: linear-gradient(160deg, #262626, #1e1e1e);
+  border: 1px solid rgba(201,168,76,.22);
+  border-radius: 14px;
+  padding: 34px 28px;
+  text-align: center;
+  transition: transform .22s ease, border-color .22s ease;
+}
+.tech-card:hover { transform: translateY(-6px); border-color: var(--gold); }
+.tech-icon { font-size: 3rem; margin-bottom: 16px; }
+.tech-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.tech-card p { font-size: .92rem; color: rgba(255,255,255,.72); line-height: 1.7; }
+
+/* ---- MARCAS QUE CRIAMOS ---- */
+.marcas { padding: 80px 0; background: #f6f4ef; }
+.marcas-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 44px;
+}
+.marca-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,.07);
+  transition: transform .22s ease, box-shadow .22s ease;
+  display: flex;
+  flex-direction: column;
+}
+.marca-card:hover { transform: translateY(-6px); box-shadow: 0 14px 36px rgba(0,0,0,.14); }
+.marca-head {
+  height: 128px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: linear-gradient(135deg, var(--mc), var(--mc2));
+  position: relative;
+}
+.marca-head::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 78% 22%, rgba(255,255,255,.18), transparent 60%);
+}
+.marca-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  padding: 0 12px;
+  line-height: 1.1;
+  z-index: 1;
+  text-shadow: 0 1px 6px rgba(0,0,0,.2);
+}
+.marca-sub {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.9);
+  z-index: 1;
+}
+.marca-body { padding: 20px 20px 22px; display: flex; flex-direction: column; flex: 1; }
+.marca-cat {
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--gold-dark);
+  margin-bottom: 8px;
+}
+.marca-desc { font-size: .86rem; color: #555; line-height: 1.55; flex: 1; margin-bottom: 14px; }
+.marca-status {
+  font-size: .74rem;
+  font-weight: 700;
+  padding: 5px 0;
+  border-radius: 6px;
+}
+.marca-status.disponivel { color: #16a34a; }
+.marca-status.propria    { color: #2563eb; }
+.marca-status.expansao   { color: #d97706; }
+.marca-status.breve      { color: #9ca3af; }
+.marcas-cta {
+  text-align: center;
+  margin-top: 48px;
+}
+.marcas-cta-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: var(--dark);
+  margin-bottom: 20px;
+}
+@media (max-width: 980px) {
+  .micro-grid, .marcas-grid { grid-template-columns: repeat(2, 1fr); }
+  .tech-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .micro-grid, .marcas-grid { grid-template-columns: 1fr; }
+}
+
 /* ---- E-BOOKS ---- */
 .ebooks-section { padding: 72px 0 80px; background: #f8f6f2; }
 .ebooks-grid {
